@@ -1,7 +1,10 @@
 {
   "name": "musicplayer",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "av": "^0.4.4",
+    "mp3": "^0.1.0"
+  },
   "repository": {},
   "main": "app/index.html",
   "node-remote": "somesource",
@@ -10,8 +13,8 @@
     "toolbar": true,
     "frame": true,
     "position": "center",
-    "width": 360,
-    "height": 300,
+    "width": 660,
+    "height": 500,
     "min_width": 220,
     "min_height": 220
   },

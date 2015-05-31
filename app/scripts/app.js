@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc overview
- * @name musicPlayerApp
+ * @name envomusPlayerApp
  * @description
- * # musicPlayerApp
+ * # envomusPlayerApp
  *
  * Main module of the application.
  */
