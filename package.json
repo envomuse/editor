@@ -7,7 +7,8 @@
   },
   "repository": {},
   "main": "app/index.html",
-  "node-remote": "somesource",
+  "node-remote": "localhost",
+  "user-agent":"%name %nwver %osinfo",
   "window": {
     "show": true,
     "toolbar": true,

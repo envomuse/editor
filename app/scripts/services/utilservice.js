@@ -32,6 +32,11 @@ angular.module('musicPlayerApp')
           buffer[i] = view[i];
         }
         return buffer;
+      },
+
+      isNW: function (argument) {
+        var ua = navigator.userAgent.toLocaleLowerCase();
+        return ua.indexOf('music') >= 0; 
       }
     };
   });
