@@ -8,8 +8,8 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('MainCtrl',['$scope', 'authServie', 'playerServie', 'dbservice',
-  	function ($scope, authServie, playerServie, dbservice) {
+  .controller('MainCtrl',['$scope', '$log', 'authServie', 'playerServie', 'dbservice',
+  	function ($scope, $log, authServie, playerServie, dbservice) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -18,7 +18,7 @@ angular.module('musicPlayerApp')
 
     $.when(dbservice.insert())
     .then(function(newDoc) {
-      console.log('newDoc:', newDoc);
+      $log.debug('newDoc:', newDoc);
       $scope.doc = newDoc;
 
       return dbservice.selectAll()
