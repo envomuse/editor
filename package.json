@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "dependencies": {
     "av": "^0.4.4",
-    "mp3": "^0.1.0"
+    "gulp": "^3.9.0"
   },
   "repository": {},
   "main": "app/index.html",
   "node-remote": "localhost",
-  "user-agent":"%name %nwver %osinfo",
+  "user-agent": "%name %nwver %osinfo",
   "window": {
     "show": true,
     "toolbar": true,

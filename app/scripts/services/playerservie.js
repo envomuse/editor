@@ -14,27 +14,52 @@ angular.module('musicPlayerApp')
     // ...
     console.log('playerServie');
 
-    var cwd = process.cwd();
-
-    var sampleMP3 = cwd + '/audio/Adaro-Es Ist Ein Schnee Gefallen.mp3',
+    var cwd = process.cwd(),
+      sampleMP3 = cwd + '/audio/Adaro-Es Ist Ein Schnee Gefallen.mp3',
       sampleFLAC = cwd + '/audio/Adele-Rolling in the deep.flac';
+     
+    //registor window events 
+    var win = require('nw.gui').Window.get();
+    win.on('close', function(){
+      console.log('my close');
+      releaseMediaArray();
+      this.close(true);
+    });
 
+    //media player manage
+    var mediaPlayerMap = {};
+    var mediaPlayerArray = [];
 
-    var fs = require('fs');
+    function acquireMedia (filepath) {
+      // body...
+      if (filepath in mediaPlayerMap) {
+        return mediaPlayerMap[filepath];
+      };
+      var fs = require('fs');
+      var buffer = utilService.toArrayBuffer(fs.readFileSync(filepath));
+      var mediaPlayer = AV.Player.fromBuffer(buffer);
+      mediaPlayerArray.push(mediaPlayer);
+      mediaPlayerMap[filepath] = mediaPlayer;
+      return mediaPlayer;
+    }
 
-    var mp3Buffer = utilService.toArrayBuffer(fs.readFileSync(sampleMP3));
-    var sampleMP3Player = AV.Player.fromBuffer(mp3Buffer);
-    var flacBuffer = utilService.toArrayBuffer(fs.readFileSync(sampleFLAC));
-    var sampleFLACPlayer = AV.Player.fromBuffer(flacBuffer);
+    function releaseMediaArray() {
+      for (var mediaPlayer in mediaPlayerArray) {
+        mediaPlayer.stop()
+      };
+      mediaPlayerArray = [];
+      mediaPlayerMap = {};
+    }
 
     // Public API here
     return {
       playMp3: function(musicFile) {
-        sampleMP3Player.togglePlayback();
+        var player = acquireMedia(sampleMP3);
+        player.togglePlayback();
       },
       playFlac: function(argument) {
-
-        sampleFLACPlayer.togglePlayback();
+        var player = acquireMedia(sampleFLAC);
+        player.togglePlayback();
       }
     };
   }]);
