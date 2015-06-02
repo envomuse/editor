@@ -30,4 +30,19 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  })
+  .run(['$rootScope', '$interval', '$log', 'configService',
+   function($rootScope, $interval, $log, configService) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+      
+    });
+    
+    //Start Timer
+    configService.getConfig().
+    then(function(config) {
+      $log.log(config);
+    });
+
+  }]);
+
+

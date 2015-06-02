@@ -11,18 +11,23 @@ angular.module('musicPlayerApp')
   .factory('dbservice', function () {
     // Service logic
     // ...
-    console.log(require('nw.gui').App.dataPath);
-
-    var meaningOfLife = 42;
     var Datastore = require('nedb')
-    , path = require('path')
-    , db = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'music.db'),
-    autoload: true });
+    , path = require('path');
+
+    var DataPath = path.join(require('nw.gui').App.dataPath, 'privateData');
+    var dataStoreCollection = {
+    };
 
     // Public API here
     return {
-      someMethod: function () {
-        return meaningOfLife;
+      getDataStore: function (storeName) {
+        if (storeName in dataStoreCollection) {
+          return dataStoreCollection[storeName];
+        };
+        var db = new Datastore({ filename: path.join(DataPath, 'music.db'),
+            autoload: true });
+        dataStoreCollection[storeName] = db;
+        return db;
       },
 
       insert: function  (argument) {

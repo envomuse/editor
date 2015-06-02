@@ -8,7 +8,7 @@
  * Factory in the envomusPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('authServie', function () {
+  .factory('authServie',['$resource',  function ($resource) {
     // Service logic
     // ...
     var path = require('path');
@@ -22,4 +22,4 @@ angular.module('musicPlayerApp')
         return process.cwd();
       }
     };
-  });
+  }]);
