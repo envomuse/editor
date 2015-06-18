@@ -33,20 +33,20 @@ angular.module('musicPlayerApp')
       insert: function  (argument) {
         var dtd = $.Deferred();
         // body...
-        var doc = {
-          name: 'hello',
-          path: 'helloSong'
-        };
+        // var doc = {
+        //   name: 'hello',
+        //   path: 'helloSong'
+        // };
 
-        db.insert(doc, function (err, newDoc) {   // Callback is optional
-          if (err) {
-            dtd.reject(err);
-            return;
-          };
-          // newDoc is the newly inserted document, including its _id
-          // newDoc has no key called notToBeSaved since its value was undefined
-          dtd.resolve(newDoc);
-        });
+        // db.insert(doc, function (err, newDoc) {   // Callback is optional
+        //   if (err) {
+        //     dtd.reject(err);
+        //     return;
+        //   };
+        //   // newDoc is the newly inserted document, including its _id
+        //   // newDoc has no key called notToBeSaved since its value was undefined
+        //   dtd.resolve(newDoc);
+        // });
 
         return dtd.promise();
       },
@@ -54,13 +54,13 @@ angular.module('musicPlayerApp')
       count: function  (argument) {
         // body...
         var dtd = $.Deferred();
-        db.count({}, function (err, count) {
-          if (err) {
-            dtd.reject(err);
-            return;
-          };
-          dtd.resolve(count);
-        });
+        // db.count({}, function (err, count) {
+        //   if (err) {
+        //     dtd.reject(err);
+        //     return;
+        //   };
+        //   dtd.resolve(count);
+        // });
 
         return dtd.promise();
       },
@@ -68,14 +68,14 @@ angular.module('musicPlayerApp')
       selectAll: function  (argument) {
         // body...
         var dtd = $.Deferred();
-        db.find({}, function (err, docs) {
-          // body...
-          if (err) {
-            dtd.reject(err);
-            return;
-          };
-          dtd.resolve(docs);
-        });
+        // db.find({}, function (err, docs) {
+        //   // body...
+        //   if (err) {
+        //     dtd.reject(err);
+        //     return;
+        //   };
+        //   dtd.resolve(docs);
+        // });
 
         return dtd.promise();
       }
