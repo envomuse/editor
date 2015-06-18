@@ -8,32 +8,14 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('MainCtrl',['$scope', 'logService', 'authServie', 'playerServie', 'dbservice', 
-  	function ($scope, logService, authServie, playerServie, dbservice) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      authServie.someMethod()
-    ];
+  .controller('MainCtrl',['$rootScope', '$scope', 'logService', 'authServie', 'playerServie', 'editorService', 'dbservice', 
+  	function ($rootScope, $scope, logService, authServie, playerServie, editorService, dbservice) {
 
-    logService.info('main 2 start');
+    $scope.init = function () {
+      $scope.rootDirectory = editorService.getRootDirectory();
+      $scope.boxList = editorService.getBoxList();
+    }
 
-    $.when(dbservice.insert())
-    .then(function(newDoc) {
-      // $log.debug('newDoc:', newDoc);
-      $scope.doc = newDoc;
-
-      return dbservice.selectAll()
-    })
-    .then(function(docs) {
-      console.log('all count:', docs);
-      return dbservice.count();
-    })
-    .then(function(count) {
-      console.log('count:', count);
-    });
-
-    $scope.cwd = authServie.someMethod();
     $scope.playSong = function  (argument) {
     	// body...
     	playerServie.playMp3();
@@ -44,5 +26,23 @@ angular.module('musicPlayerApp')
     	playerServie.playFlac();
     };
 
+    $scope.openBoxDetail = function(box) {
+      console.log('open box:', box);
+    }
+
+    $scope.$on('fileSelect', function (evt, file) {
+      editorService.setRootDirectory(file.path);
+    });
+
+    $rootScope.$on('rootDirectoryChangeEvent', function (evt, file) {
+      $scope.$apply(function () {
+        $scope.rootDirectory = editorService.getRootDirectory();
+        $scope.boxList = editorService.getBoxList();
+      });
+    });
+
+
+    // init all
+    $scope.init();
     
   }]);

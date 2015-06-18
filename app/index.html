@@ -9,6 +9,7 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="styleSheet" href="../bower_components/angular-ui-grid/ui-grid.css"/>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -74,6 +75,8 @@
         document.write('<script src="BOWERDIR/angular-sanitize/angular-sanitize.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
         document.write('<script src="BOWERDIR/angular-touch/angular-touch.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
 
+        document.write('<script src="BOWERDIR/angular-ui-grid/ui-grid.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
+
         if (ua.indexOf('music') >= 0) {
           var gulp = require('gulp');
           gulp.task('reload', function () {
@@ -105,6 +108,8 @@
         <script src="scripts/services/backendservice.js"></script>
         <script src="scripts/services/configservice.js"></script>
         <script src="scripts/services/logservice.js"></script>
+        <script src="scripts/directives/filedialog.js"></script>
+        <script src="scripts/services/editorservice.js"></script>
         <!-- endbuild -->
 </body>
 </html>
