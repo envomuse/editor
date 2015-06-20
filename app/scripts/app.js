@@ -16,11 +16,15 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.grid'
+    'ui.bootstrap',
+    "com.2fdevs.videogular",
+    "com.2fdevs.videogular.plugins.controls",
+    "com.2fdevs.videogular.plugins.overlayplay",
+    "com.2fdevs.videogular.plugins.poster"
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
+      .when('/main', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
@@ -28,8 +32,12 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/box/:boxId', {
+        templateUrl: 'views/box.html',
+        controller: 'BoxCtrl as controller'
+      })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/main'
       });
   })
   .run(['$rootScope', '$interval', '$log', 'configService',

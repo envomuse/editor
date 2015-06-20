@@ -30,25 +30,27 @@ angular.module('musicPlayerApp')
         name: path.basename(boxPath),
         path: boxPath,
         songList: [],
-        totalLength: 120
+        totalLength: 120,
+        startTm: undefined,
+        endTm: undefined
       };
       var options = {
         followLinks: false,
         listeners: {
           file: function (root, fileStat, next) {
-            console.log('find file fileStat', fileStat);
             var extname = path.extname(fileStat.name);
-            console.log(supportAudioFormat.indexOf(extname) );
             if (supportAudioFormat.indexOf(extname) >= 0) {
               song = {
                 name: fileStat.name,
                 extname: extname,
+                mime: 'audio/mpeg',
                 path: path.resolve(boxPath, fileStat.name),
-                size: fileStat.size
+                size: fileStat.size,
+                duration: 1231,
+                artist: "micheal",
+                album: "day and night"
               };
               box.songList.push(song);
-              
-              console.log('add song');
             };
 
             next();
@@ -86,6 +88,17 @@ angular.module('musicPlayerApp')
       getBoxList: function() {
         console.log('getBoxList:', boxes);
         return boxes;
+      },
+
+      getBox: function (boxName) {
+        var retBox = undefined;
+        angular.forEach(boxes, function(box) {
+          if (box.name === boxName) {
+            retBox = box;
+          }
+        });
+
+        return retBox;
       } 
     };
 }]);

@@ -19,6 +19,8 @@
           <th>box名字</th>
           <th>歌曲数目</th>
           <th>总时长</th>
+          <th>开始时间</th>
+          <th>结束时间</th>
         </tr>
       </thead>
       <tbody>
@@ -27,6 +29,8 @@
           <td>{{box.name}}</td>
           <td>{{box.songList.length}}</td>
           <td>{{box.totalLength}}</td>
+          <td>{{box.startTm | date:'shortTime'}}</td>
+          <td>{{box.endTm | date:'shortTime'}}</td>
         </tr>
       </tbody>
     </table>

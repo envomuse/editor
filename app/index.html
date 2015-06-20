@@ -9,7 +9,6 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="styleSheet" href="../bower_components/angular-ui-grid/ui-grid.css"/>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -22,7 +21,7 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="header">
+    <div class="header hidden">
       <div class="navbar navbar-default" role="navigation">
         <div class="container">
           <div class="navbar-header">
@@ -55,40 +54,28 @@
 
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <p><span class="glyphicon glyphicon-heart"></span> Envomuse Editor</p>
       </div>
     </div>
 
     <!-- build:js(.) scripts/vendor.js -->
 
-    <script type="text/javaScript">
-        var ua = navigator.userAgent.toLocaleLowerCase();
-        console.log('ua:', ua);
-        var BOWERDIR = ua.indexOf('music') >= 0 ? '../bower_components' :'bower_components';
-        document.write('<script src="BOWERDIR/jquery/dist/jquery.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular/angular.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/bootstrap/dist/js/bootstrap.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-animate/angular-animate.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-cookies/angular-cookies.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-resource/angular-resource.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-route/angular-route.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-sanitize/angular-sanitize.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-        document.write('<script src="BOWERDIR/angular-touch/angular-touch.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-
-        document.write('<script src="BOWERDIR/angular-ui-grid/ui-grid.js"><\/script>'.replace('BOWERDIR', BOWERDIR));
-
-        if (ua.indexOf('music') >= 0) {
-          var gulp = require('gulp');
-          gulp.task('reload', function () {
-            if (location) location.reload();
-          });
-
-          gulp.watch('./app/**/*', ['reload']);
-        };
-
-    </script>
-
     <!-- bower:js -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/angular-animate/angular-animate.js"></script>
+    <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower_components/angular-touch/angular-touch.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/videogular/videogular.js"></script>
+    <script src="../bower_components/videogular-controls/vg-controls.js"></script>
+    <script src="../bower_components/videogular-overlay-play/vg-overlay-play.js"></script>
+    <script src="../bower_components/videogular-poster/vg-poster.js"></script>
+    <script src="../bower_components/videogular-buffering/vg-buffering.js"></script>
     
     <!-- endbower -->
     <!-- endbuild -->
@@ -110,6 +97,20 @@
         <script src="scripts/services/logservice.js"></script>
         <script src="scripts/directives/filedialog.js"></script>
         <script src="scripts/services/editorservice.js"></script>
+        <script src="scripts/controllers/box.js"></script>
         <!-- endbuild -->
+
+      <script type="text/javaScript">
+        var ua = navigator.userAgent.toLocaleLowerCase();
+        console.log('ua:', ua);
+        if (ua.indexOf('music') >= 0) {
+          var gulp = require('gulp');
+          gulp.task('reload', function () {
+            if (location) location.reload();
+          });
+
+          gulp.watch('./app/**/*', ['reload']);
+        };
+      </script>
 </body>
 </html>

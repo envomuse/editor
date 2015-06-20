@@ -1,0 +1,96 @@
+<div class="row">
+	<div class="col-md-12">
+		<a ng-href="#/main" class="btn btn-primary" >
+			<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+		</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-8 videogular-container">
+		<videogular vg-player-ready="controller.onPlayerReady($API)" 
+					vg-complete="controller.onCompleteVideo()" 
+					vg-theme="controller.config.theme.url">
+
+			<vg-media vg-src="controller.config.sources"
+					  vg-tracks="controller.config.tracks">
+			</vg-media>
+
+			<vg-controls>
+			<vg-time-display>{{ totalTime | date:'mm:ss' }}</vg-time-display>
+
+				<vg-play-pause-button></vg-play-pause-button>
+				<vg-time-display>{{ currentTime | date:'mm:ss' }}</vg-time-display>
+				<vg-scrub-bar>
+					<vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+				</vg-scrub-bar>
+				<vg-time-display>{{ timeLeft | date:'mm:ss' }}</vg-time-display>
+				<vg-volume>
+					<vg-mute-button></vg-mute-button>
+					<vg-volume-bar></vg-volume-bar>
+				</vg-volume>
+			</vg-controls>
+
+			<vg-poster vg-url='config.plugins.poster'></vg-poster>
+		</videogular>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">情景段：{{box.name}}</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-3">
+						开始时间 {{box.startTm | date:'shortTime' }}
+						<timepicker ng-model="box.startTm" ng-change="" hour-step="1" minute-step="5" show-meridian="ismeridian"></timepicker>
+					</div>
+					<div class="col-md-3">
+						结束时间 {{box.endTm | date:'shortTime' }}
+						<timepicker ng-model="box.endTm" ng-change="" hour-step="1" minute-step="5" show-meridian="ismeridian"></timepicker>
+					</div>
+					<div class="col-md-offset-1 col-md-5">
+						<div class="row">
+							目前播放歌曲:
+						</div>
+						<div class="row">
+							{{box.songList[controller.currentVideo].name}}
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-info">
+					<!-- Default panel contents -->
+					<div class="panel-heading"> 歌曲列表</div>
+					<!-- Table -->
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th >#</th>
+								<th class="col-md-4">歌曲名字</th>
+								<th class="col-md-1">时长</th>
+								<th class="col-md-3 col-md-offset-1">艺术家</th>
+								<th class="col-md-3">专辑</th>
+								<th class="col-md-1">播放</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="song in box.songList" ng-click="togglePlaySong(song)">
+								<td>{{$index + 1}}</td>
+								<td>{{song.name}}</td>
+								<td>{{song.duration}}</td>
+								<td>{{song.artist}}</td>
+								<td>{{song.album}}</td>
+								<td>
+									<span class="glyphicon glyphicon-play" ng-click="controller.setVideo($index)" aria-hidden="true"></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+</div>
