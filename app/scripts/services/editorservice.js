@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('editorService', ['$rootScope', function ($rootScope) {
+  .factory('editorService', ['$rootScope', 'lodash', function ($rootScope, lodash) {
     // Service logic
     // ...
     var walk = require('walk'),
@@ -17,6 +17,23 @@ angular.module('musicPlayerApp')
 
     var supportAudioFormat = ['.mp3', '.wav'];
     var rootDirectory = '',
+    periodInfo = {
+      calcType: "daysOfWeek",
+      daysOfWeekValues: {
+        'Mon': true, 
+        'Tue': true,
+        'Wed': true, 
+        'Thur': true, 
+        'Fri': true, 
+        'Sat': false, 
+        'Sun': false
+      },
+      dateRangeValues: {
+        'startDate': new Date(),
+        'endDate': new Date()
+      },
+      multipleDatesValues: [new Date(),],
+    },
     boxes = [];
 
 
@@ -99,6 +116,10 @@ angular.module('musicPlayerApp')
         });
 
         return retBox;
+      },
+
+      getPeriodInfo: function () {
+        return periodInfo;
       } 
     };
 }]);

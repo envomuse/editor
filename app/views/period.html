@@ -1,0 +1,143 @@
+<h1>播放周期</h1>
+<div class="row">
+	<div class="col-md-2">
+		<a ng-href="#/main" class="btn btn-primary" >
+			<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+		</a>
+	</div>
+</div>
+<hr />
+<h3> 请选择设置方式 </h3>
+<div class="row">
+	<div class="col-md-3">
+		<label>
+			<input type="radio" ng-model="periodInfo.calcType" value="daysOfWeek" ng-change="changeCalcType();">
+			星期N设置
+		</label>
+	</div>
+	<div class="col-md-3">
+		<label>
+			<input type="radio" ng-model="periodInfo.calcType" value="dateRange" ng-change="changeCalcType();">
+			日期段设置
+		</label>
+	</div>
+	<div class="col-md-3">
+		<label>
+			<input type="radio" ng-model="periodInfo.calcType" value="multipleDates" ng-change="changeCalcType();">
+			多日期设置
+		</label>
+	</div>
+</div>
+<hr />
+<h3> 具体设置 </h3>
+<tabset vertical="false" type="tabs">
+<tab heading="星期N设置" >
+<br/>
+<div class="row">
+	<div class="col-md-2">
+		<label> 星期一
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Mon">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期二
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Tue">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期三
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Wed">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期四
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Thur">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期五
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Fri">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期六
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Sat">
+		</label>
+	</div>
+	<div class="col-md-2">
+		<label> 星期日
+			<input type="checkbox" ng-model="periodInfo.daysOfWeekValues.Sun">
+		</label>
+	</div>
+</div>
+<br/>
+
+<div class="row">
+	<div class="col-md-2">
+		<button class="btn btn-info" ng-click="setDaysOfWeekMode('weekday')">工作日</button>
+	</div>
+	<div class="col-md-2">
+		<button class="btn btn-info" ng-click="setDaysOfWeekMode('weekend')">周末</button>
+	</div>
+	<div class="col-md-2">
+		<button class="btn btn-info" ng-click="setDaysOfWeekMode('everyday')">每天</button>
+	</div>
+</div>
+<br/>
+</tab>
+<tab heading="时间段设置" >
+<hr />
+<div class="row">
+	<div class="col-md-6">
+		<h4>开始日期 <em>{{periodInfo.dateRangeValues.startDate | date:'fullDate' }}</em> </h4>
+		<div style="display:inline-block; min-height:290px;">
+			<datepicker ng-model="periodInfo.dateRangeValues.startDate" min-date=" " show-weeks="true" class="well well-sm" custom-class=""></datepicker>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<h4>结束日期 <em>{{periodInfo.dateRangeValues.endDate | date:'fullDate' }}</em> </h4>
+		<div style="display:inline-block; min-height:290px;">
+			<datepicker ng-model="periodInfo.dateRangeValues.endDate" min-date=" " show-weeks="true" class="well well-sm" custom-class=""></datepicker>
+		</div>
+	</div>
+</div>
+</tab>
+<tab heading="多日期设置">
+<hr />
+<div class="row">
+	<div class="col-md-6">
+		<button class="btn btn-lg" ng-click="addMultipleDatesValues(dt)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+		<h4> <em>{{dt | date:'fullDate' }}</em> </h4>
+		<div style="display:inline-block; min-height:290px;">
+			<datepicker ng-model="dt" min-date=" " show-weeks="true" class="well well-sm" custom-class=""></datepicker>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<!-- Default panel contents -->
+			<div class="panel-heading"> 日期列表</div>
+			<!-- Table -->
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th >#</th>
+						<th class="col-md-8">日期</th>
+						<th class="col-md-3">删除</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="date in periodInfo.multipleDatesValues" ng-click="">
+						<td>{{$index + 1}}</td>
+						<td>{{date | date:'fullDate' }}</td>
+						<td>
+							<span class="glyphicon glyphicon-trash" ng-click="removeMultipleDatesValues($index)" aria-hidden="true"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+	</div>
+</div>
+</tab>
+</tabset>

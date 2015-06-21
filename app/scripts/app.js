@@ -16,6 +16,7 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
+    'ngLodash',
     'ui.bootstrap',
     "com.2fdevs.videogular",
     "com.2fdevs.videogular.plugins.controls",
@@ -35,6 +36,10 @@ angular
       .when('/box/:boxId', {
         templateUrl: 'views/box.html',
         controller: 'BoxCtrl as controller'
+      })
+      .when('/period', {
+        templateUrl: 'views/period.html',
+        controller: 'PeriodCtrl'
       })
       .otherwise({
         redirectTo: '/main'

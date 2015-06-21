@@ -1,15 +1,30 @@
+
+
+<h3> 音乐编辑器 </h3>
+<p> 工作目录：{{rootDirectory}} </p>
 <div class="row">
   <div class="col-md-12">
-    工作目录：{{rootDirectory}}
+    <input type="file" webkitdirectory file-dialog name="选择"/> 
   </div>
 </div>
 
+<h3> 操作 </h3>
 <div class="row">
-  <div class="col-md-12">
-    <input type="file" webkitdirectory file-dialog/>
+  <div class="col-md-4">
+    <a ng-href="#/period" class="btn btn-default" >
+      播放周期 </span>
+    </a>
+
+    {{periodInfo.calcType | periodInfoFilter}}
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-default" type="submit">生成压缩包</button>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-default" type="submit">倒入压缩包</button>
   </div>
 </div>
-
+<h3> box列表 </h3>
 <div class="row">
   <div class="col-md-12">
     <table class="table table-striped">

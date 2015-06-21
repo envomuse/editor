@@ -21,6 +21,7 @@ angular.module('musicPlayerApp')
 
       $scope.rootDirectory = editorService.getRootDirectory();
       $scope.boxList = editorService.getBoxList();
+      $scope.periodInfo = editorService.getPeriodInfo();
     }
 
     $scope.playSong = function  (argument) {
