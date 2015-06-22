@@ -14,6 +14,9 @@ angular.module('musicPlayerApp')
 
   		// get video sources -> controller.videos = 
   		$scope.box = editorService.getBox($routeParams.boxId);
+
+      console.log('$scope.box:', $scope.box);
+      
   		controller.videos = [];
   		angular.forEach($scope.box.songList, function(song) {
   			var fileUrl = 'file://'+song.path;
@@ -63,25 +66,5 @@ angular.module('musicPlayerApp')
             controller.config.sources = controller.videos[index].sources;
             $timeout(controller.API.play.bind(controller.API), 100);
         };
-    
-	    
-// var mp3File =  
-// "file:///Users/i071628/meanStack/github/envomuse/uploadAttachment/dj/new/box1-Jazz/04 - John Scofield - I Don't Need No Doctor.mp3";
- 
-
- //    $scope.config = {
-	// 	sources: [
-	// 		// {src: $sce.trustAsResourceUrl(mp3File), type: "audio/mp3"},
-	// 		{src:  mp3File, type: "audio/mp3"},
-			
-	// 	],
-	// 	tracks: [
-	// 	],
-	// 	theme: "../bower_components/videogular-themes-default/videogular.css",
-	// 	plugins: {
-	// 		poster: "http://www.videogular.com/assets/images/videogular.png"
-	// 	}
-	// };
-	 
 
   }]);

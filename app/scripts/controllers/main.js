@@ -24,6 +24,11 @@ angular.module('musicPlayerApp')
       $scope.periodInfo = editorService.getPeriodInfo();
     }
 
+    playerServie.getMetaInfo('/Users/i071628/meanStack/github/envomuse/uploadAttachment/dj/new/box3-indie/04\ -\ Dancing\ Shoes.mp3',
+      function(meta) {
+        console.log(meta);
+      });
+
     $scope.playSong = function  (argument) {
     	// body...
     	playerServie.playMp3();

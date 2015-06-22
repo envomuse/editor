@@ -43,7 +43,7 @@
           <td>{{$index + 1}}</td>
           <td>{{box.name}}</td>
           <td>{{box.songList.length}}</td>
-          <td>{{box.totalLength}}</td>
+          <td>{{box.totalLength | durationFilter}}</td>
           <td>{{box.startTm | date:'shortTime'}}</td>
           <td>{{box.endTm | date:'shortTime'}}</td>
         </tr>

@@ -17,6 +17,7 @@ angular
     'ngSanitize',
     'ngTouch',
     'ngLodash',
+    'angularMoment',
     'ui.bootstrap',
     "com.2fdevs.videogular",
     "com.2fdevs.videogular.plugins.controls",

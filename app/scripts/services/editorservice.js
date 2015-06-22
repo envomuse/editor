@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('editorService', ['$rootScope', 'lodash', function ($rootScope, lodash) {
+  .factory('editorService', ['$rootScope', '$q', 'lodash', 'playerServie', function ($rootScope, $q, lodash, playerServie) {
     // Service logic
     // ...
     var walk = require('walk'),
@@ -43,7 +43,8 @@ angular.module('musicPlayerApp')
 
     function _appendBox(boxPath) {
       console.log('_appendBox', boxPath);
-      var song, box = {
+      var promises = [], deferred, filePath,
+      song, box = {
         name: path.basename(boxPath),
         path: boxPath,
         songList: [],
@@ -57,17 +58,26 @@ angular.module('musicPlayerApp')
           file: function (root, fileStat, next) {
             var extname = path.extname(fileStat.name);
             if (supportAudioFormat.indexOf(extname) >= 0) {
-              song = {
-                name: fileStat.name,
-                extname: extname,
-                mime: 'audio/mpeg',
-                path: path.resolve(boxPath, fileStat.name),
-                size: fileStat.size,
-                duration: 1231,
-                artist: "micheal",
-                album: "day and night"
-              };
-              box.songList.push(song);
+              // var deferred = $q.defer();
+              filePath = path.resolve(boxPath, fileStat.name);
+              deferred = playerServie.getMetaInfo(filePath)
+              .then(function (metaInfo) {
+                  song = {
+                    name: fileStat.name,
+                    extname: extname,
+                    mime: extname === '.wav' ? 'audio/wav' : 'audio/mpeg',
+                    path: path.resolve(boxPath, fileStat.name),
+                    size: fileStat.size,
+
+                    metadata: metaInfo.metadata,
+                    format: metaInfo.format,
+                    duration: metaInfo.duration,
+
+                  };
+                  box.songList.push(song);
+                  console.log('resolve');
+                });
+              promises.push(deferred);
             };
 
             next();
@@ -76,6 +86,16 @@ angular.module('musicPlayerApp')
       }
       walk.walkSync(boxPath, options);
       boxes.push(box);
+
+      return $q.all(promises)
+      .then(function() {
+        var totalLength = 0;
+        angular.forEach(box.songList, function(song) {
+          totalLength += song.duration;
+        });
+        box.totalLength = totalLength;
+        console.log('totalLength is:', totalLength);
+      });
     }
 
     // Public API here
@@ -87,15 +107,21 @@ angular.module('musicPlayerApp')
 
       refresh : function () {
         _clearBox();
+        var promises = [];
         var files = fs.readdirSync(rootDirectory);
         angular.forEach(files, function(file) {
           var boxPath = path.resolve(rootDirectory, file);
           if (fs.lstatSync(boxPath).isDirectory()) {
-            _appendBox(boxPath);
+            promises.push(_appendBox(boxPath));
           }
         });
 
-        $rootScope.$emit('rootDirectoryChangeEvent', '');
+        $q.all(promises)
+        .then(function () {
+          console.log('all done');
+          $rootScope.$emit('rootDirectoryChangeEvent', '');
+        });
+        
       },
 
       getRootDirectory: function() {
