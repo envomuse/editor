@@ -84,6 +84,11 @@ body {
 
 /* For angular bootstrap */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.gi-m{font-size: 1.5em;}
+.gi-2x{font-size: 2em;}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}
 
 /* For videogular player */
 .videogular-container {
@@ -91,4 +96,25 @@ body {
   height: 100px;
   margin: auto;
   overflow: auto;
+}
+
+/* For upload button */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
 }

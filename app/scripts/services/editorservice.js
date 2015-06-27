@@ -58,7 +58,6 @@ angular.module('musicPlayerApp')
           file: function (root, fileStat, next) {
             var extname = path.extname(fileStat.name);
             if (supportAudioFormat.indexOf(extname) >= 0) {
-              // var deferred = $q.defer();
               filePath = path.resolve(boxPath, fileStat.name);
               deferred = playerServie.getMetaInfo(filePath)
               .then(function (metaInfo) {
@@ -102,10 +101,12 @@ angular.module('musicPlayerApp')
     return {
       setRootDirectory: function (_rootDirectory) {
         rootDirectory = _rootDirectory;
-        this.refresh();
+        return this.refresh();
       },
 
       refresh : function () {
+        var deferred = $q.defer();
+
         _clearBox();
         var promises = [];
         var files = fs.readdirSync(rootDirectory);
@@ -116,11 +117,21 @@ angular.module('musicPlayerApp')
           }
         });
 
-        $q.all(promises)
-        .then(function () {
-          console.log('all done');
+        if (promises.length === 0) {
+          console.log('all done with no promises');
           $rootScope.$emit('rootDirectoryChangeEvent', '');
-        });
+          deferred.resolve();
+          return; 
+        } else {
+          $q.all(promises)
+          .then(function () {
+            console.log('all done');
+            $rootScope.$emit('rootDirectoryChangeEvent', '');
+            deferred.resolve();
+          });
+        }
+
+        return deferred.promise;
         
       },
 

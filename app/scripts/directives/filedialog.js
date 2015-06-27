@@ -9,13 +9,26 @@
 angular.module('musicPlayerApp')
   .directive('fileDialog', function () {
     return {
-      // template: '<input type="file" file-dialog/> </input>',
+      template: '<span class="btn btn-default btn-file"> {{title}} <input webkitdirectory type="file"> </span>',
+      scope: {
+        onFileSelected: '='
+      },
       restrict: 'A',
       link: function postLink(scope, element, attrs) {
+        scope.title = attrs.title;
+         
+        if (!('webkitdirectory' in attrs) ) {
+          element.find('input').removeAttr('webkitdirectory');
+        }; 
+
         element.bind('change', function (evt) {
         	if (evt.target.files.length) {
-        		scope.$emit('fileSelect', evt.target.files[0]);
+            scope.onFileSelected(evt.target.files[0]);
         	}
+        });
+
+        element.on('$destroy', function() {
+          element.unbind('change');
         });
       }
     };

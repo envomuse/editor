@@ -77,17 +77,22 @@ angular.module('musicPlayerApp')
       },
 
       getMetaInfo: function (musicFile, callback) {
+        console.log('getMetaInfo:', musicFile);
+
         var deferred = $q.defer();
         var metaInfo = {
           metadata: null,
           duration: null,
           format: null,
           parseComplete: function() {
-            return this.metadata && this.duration && this.format;
+            console.log('parseComplete');
+            return this.duration !== null;
+            // return this.metadata && this.duration && this.format;
           }
         };
 
         function notifyMetaInfo() {
+          console.log('notifyMetaInfo');
           if (metaInfo.parseComplete()) {
             if (angular.isFunction(callback)) {
               callback(metaInfo);
@@ -97,30 +102,37 @@ angular.module('musicPlayerApp')
           }
         }
 
-        var asset = acquireMediaAsset(sampleMP3);
+        var asset = acquireMediaAsset(musicFile);
 
-        asset.once('error', function(err) {
-          console.log('err is:', err);
-        });
-
-        asset.once('metadata', function(metadata) {
-          metaInfo.metadata = metadata;
-          notifyMetaInfo();
-          console.log('metadata is:', metadata);
-        });
-
-        asset.once('duration', function(duration) {
+        asset.get('duration', function(duration) {
           console.log('duration is:', duration);
           metaInfo.duration = duration;
           notifyMetaInfo();
         });
 
-        asset.once('format', function(format) {
-          metaInfo.format = format;
-          notifyMetaInfo();
+        asset.get('error', function(err) {
+          console.error('err is:', err);
+          deferred.reject(err);
         });
 
-        asset.start();
+        // asset.once('metadata', function(metadata) {
+        //   metaInfo.metadata = metadata;
+        //   notifyMetaInfo();
+        //   console.log('metadata is:', metadata);
+        // });
+
+        // asset.once('duration', function(duration) {
+        //   console.log('duration is:', duration);
+        //   metaInfo.duration = duration;
+        //   notifyMetaInfo();
+        // });
+
+        // asset.once('format', function(format) {
+        //   metaInfo.format = format;
+        //   notifyMetaInfo();
+        // });
+
+        // asset.start();
 
         return deferred.promise;
       }

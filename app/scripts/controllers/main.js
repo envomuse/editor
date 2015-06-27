@@ -14,8 +14,8 @@ angular.module('musicPlayerApp')
     $scope.init = function () {
       console.log('MainCtrl init');
       var rootDir = editorService.getRootDirectory();
-      if (rootDir.length < 10) {
-        rootDir = '/Users/i071628/meanStack/github/envomuse/uploadAttachment/dj/new';
+      if (false && rootDir.length < 10) {
+        rootDir = '/Users/i071628/meanStack/github/musicPackage/';
         editorService.setRootDirectory(rootDir);
       };
 
@@ -23,12 +23,7 @@ angular.module('musicPlayerApp')
       $scope.boxList = editorService.getBoxList();
       $scope.periodInfo = editorService.getPeriodInfo();
     }
-
-    playerServie.getMetaInfo('/Users/i071628/meanStack/github/envomuse/uploadAttachment/dj/new/box3-indie/04\ -\ Dancing\ Shoes.mp3',
-      function(meta) {
-        console.log(meta);
-      });
-
+    
     $scope.playSong = function  (argument) {
     	// body...
     	playerServie.playMp3();
@@ -42,11 +37,19 @@ angular.module('musicPlayerApp')
     $scope.openBoxDetail = function(box) {
       console.log('open box:', box);
       $location.path('/box/'+box.name);
-    }
+    };
 
-    $scope.$on('fileSelect', function (evt, file) {
+    $scope.onFileSelected = function (file) {
+      console.log('onFileSelected');
       editorService.setRootDirectory(file.path);
-    });
+    };
+
+    $scope.refreshRootDirectory = function () {
+      console.log('refreshRootDirectory');
+      if ($scope.rootDirectory) {
+        editorService.refresh();
+      }
+    };
 
     $rootScope.$on('rootDirectoryChangeEvent', function (evt, file) {
       if (!$scope.$$phase) {

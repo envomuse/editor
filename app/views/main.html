@@ -1,10 +1,15 @@
 
 
 <h3> 音乐编辑器 </h3>
-<p> 工作目录：{{rootDirectory}} </p>
 <div class="row">
-  <div class="col-md-12">
-    <input type="file" webkitdirectory file-dialog name="选择"/> 
+  <div class="col-md-2">
+    <div file-dialog  webkitdirectory on-file-selected="onFileSelected" title = '工作目录'>  </div> 
+  </div>
+  <div class="col-md-1">
+    <span class="glyphicon glyphicon-refresh gi-m" ng-click="refreshRootDirectory()" aria-hidden="true"></span>
+  </div>
+  <div class="col-md-8">
+    {{rootDirectory}}
   </div>
 </div>
 
