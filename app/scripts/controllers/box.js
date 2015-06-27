@@ -20,11 +20,12 @@ angular.module('musicPlayerApp')
   		controller.videos = [];
   		angular.forEach($scope.box.songList, function(song) {
   			var fileUrl = 'file://'+song.path;
+          fileUrl = 'file://'+'/Users/i071628/meanStack/github/musicPackage/hh.mp3';
   			console.log(fileUrl);
-  			var oneSource = { sources: [{src: $sce.trustAsResourceUrl(fileUrl), type: song.mime}] };
+  			var oneSource = { sources: [{src: $sce.trustAsResourceUrl(fileUrl), type: 'audio/mpeg'}] };
             controller.videos.push(oneSource); 
         });
-
+ 
   		// videogular config
   		controller.state = null;
         controller.API = null;
@@ -54,10 +55,9 @@ angular.module('musicPlayerApp')
             theme: {
             	url: "../bower_components/videogular-themes-default/videogular.css"
             },
-            tracks: [],
-            plugins: {
-				poster: "http://www.videogular.com/assets/images/videogular.png"
-			}
+   //          plugins: {
+			// 	poster: "http://www.videogular.com/assets/images/videogular.png"
+			// }
         };
 
         controller.setVideo = function(index) {
