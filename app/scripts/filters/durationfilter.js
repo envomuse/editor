@@ -13,7 +13,8 @@ angular.module('musicPlayerApp')
   	function addZero(value) {
   		return value < 10 ? ('0'+value) : value;
   	}
-    return function (milliseconds) {
+    return function (_seconds) {
+      var milliseconds = _seconds*1000;
     	var duration = moment.duration(milliseconds);
     	var days, hours, minutes, seconds;
     	days = duration.get('days');

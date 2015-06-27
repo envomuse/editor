@@ -20,8 +20,6 @@ angular.module('musicPlayerApp')
   		controller.videos = [];
   		angular.forEach($scope.box.songList, function(song) {
   			var fileUrl = 'file://'+song.path;
-          fileUrl = 'file://'+'/Users/i071628/meanStack/github/musicPackage/hh.mp3';
-  			console.log(fileUrl);
   			var oneSource = { sources: [{src: $sce.trustAsResourceUrl(fileUrl), type: 'audio/mpeg'}] };
             controller.videos.push(oneSource); 
         });

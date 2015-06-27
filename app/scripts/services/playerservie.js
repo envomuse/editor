@@ -10,14 +10,6 @@
 
 angular.module('musicPlayerApp')
   .factory('playerServie', ['$q', 'lodash', 'utilService', function($q, lodash, utilService) {
-    // Service logic
-    // ...
-    console.log('playerServie');
-
-    var cwd = process.cwd(),
-      sampleMP3 = cwd + '/audio/Adaro-Es Ist Ein Schnee Gefallen.mp3',
-      sampleFLAC = cwd + '/audio/Adele-Rolling in the deep.flac';
-     
     //registor window events 
     var win = require('nw.gui').Window.get();
     win.on('close', function(){
@@ -27,7 +19,17 @@ angular.module('musicPlayerApp')
 
     //media player manage
     var mediaPlayerCache = {},
-      assetCache = {};
+      assetCache = {},
+      buzzSoundCache = {};
+
+    function acquireMediaBuzzSound (filepath) {
+      if (!(filepath in buzzSoundCache)) {
+        var sources = 'file://'+filepath;
+        buzzSoundCache[filepath] = new buzz.sound(sources);
+      }
+      
+      return buzzSoundCache[filepath];
+    };
 
     function acquireMediaAV (filepath) {
       // body...
@@ -63,6 +65,11 @@ angular.module('musicPlayerApp')
         asset.stop()
       });
       assetCache = {};
+
+      lodash.values(buzzSoundCache, function(sound) {
+        sound.unbind('loadedmetadata');
+      });
+      buzzSoundCache = {};
     }
 
     // Public API here
@@ -79,60 +86,25 @@ angular.module('musicPlayerApp')
       getMetaInfo: function (musicFile, callback) {
         console.log('getMetaInfo:', musicFile);
 
-        var deferred = $q.defer();
-        var metaInfo = {
-          metadata: null,
-          duration: null,
-          format: null,
-          parseComplete: function() {
-            console.log('parseComplete');
-            return this.duration !== null;
-            // return this.metadata && this.duration && this.format;
-          }
-        };
+        var metaInfo, 
+          deferred = $q.defer();
 
-        function notifyMetaInfo() {
-          console.log('notifyMetaInfo');
-          if (metaInfo.parseComplete()) {
-            if (angular.isFunction(callback)) {
-              callback(metaInfo);
-            } else {
-              deferred.resolve(metaInfo);
-            }
-          }
+        var sound = acquireMediaBuzzSound(musicFile);
+        console.log('sound.getStateCode(): ', sound.getStateCode());
+        if (sound.getStateCode() === 0) {
+          sound.bindOnce('loadedmetadata', function() {
+            metaInfo = {
+              duration: sound.getDuration()
+            };
+            console.log('duration:', metaInfo.duration);
+            deferred.resolve(metaInfo);
+          });
+        } else {
+          metaInfo = {
+            duration: sound.getDuration()
+          };
+          deferred.resolve(metaInfo);
         }
-
-        var asset = acquireMediaAsset(musicFile);
-
-        asset.get('duration', function(duration) {
-          console.log('duration is:', duration);
-          metaInfo.duration = duration;
-          notifyMetaInfo();
-        });
-
-        asset.get('error', function(err) {
-          console.error('err is:', err);
-          deferred.reject(err);
-        });
-
-        // asset.once('metadata', function(metadata) {
-        //   metaInfo.metadata = metadata;
-        //   notifyMetaInfo();
-        //   console.log('metadata is:', metadata);
-        // });
-
-        // asset.once('duration', function(duration) {
-        //   console.log('duration is:', duration);
-        //   metaInfo.duration = duration;
-        //   notifyMetaInfo();
-        // });
-
-        // asset.once('format', function(format) {
-        //   metaInfo.format = format;
-        //   notifyMetaInfo();
-        // });
-
-        // asset.start();
 
         return deferred.promise;
       }

@@ -67,11 +67,7 @@ angular.module('musicPlayerApp')
                     mime: extname === '.wav' ? 'audio/wav' : 'audio/mpeg',
                     path: path.resolve(boxPath, fileStat.name),
                     size: fileStat.size,
-
-                    metadata: metaInfo.metadata,
-                    format: metaInfo.format,
-                    duration: metaInfo.duration,
-
+                    duration: metaInfo.duration
                   };
                   box.songList.push(song);
                   console.log('resolve');
