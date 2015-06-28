@@ -10,8 +10,8 @@
       </button>
       <ul class="dropdown-menu" role="menu">
         <li><a ng-click="openFile()">保存</a> </li>
-        <li> <div file-dialog accept=".envomuse"  on-file-selected="openConfigFile" title = '打开'/> </li>
-        <li> <div file-dialog saveas accept=".envomuse"  on-file-selected="saveConfigFile" title = '另存为'/> </li>
+        <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
+        <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
         <li class="divider"></li>
         <li><a ng-click="openFile()"> 生成工作包</a></li>
       </ul>

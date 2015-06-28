@@ -8,14 +8,17 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('OperationCtrl', ['$rootScope', '$scope', function ($rootScope, $scope) {
-    $scope.saveConfigFile = function  (file) {
+  .controller('OperationCtrl', ['$rootScope', '$scope', 'archiveService',
+   function ($rootScope, $scope, archiveService) {
+    $scope.saveAsNewEnvoFile = function  (file) {
       // body...
       console.log('saveConfigFile file', file.path);
+      archiveService.saveAs(file.path);
     };
 
-    $scope.openConfigFile = function  (file) {
+    $scope.openEnvoFile = function  (file) {
       // body...
-      console.log('openConfigFile file', file.path);
+      console.log('openEnvoFile file', file.path);
+      archiveService.recoverFrom(file.path);
     };
   }]);

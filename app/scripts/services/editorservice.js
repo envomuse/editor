@@ -14,8 +14,9 @@ angular.module('musicPlayerApp')
     var walk = require('walk'),
         path = require('path'), 
         fs = require('fs');
-
     var supportAudioFormat = ['.mp3', '.wav'];
+
+    // private variable
     var rootDirectory = '',
     periodInfo = {
       calcType: "daysOfWeek",
@@ -37,6 +38,7 @@ angular.module('musicPlayerApp')
     boxes = [];
 
 
+    // private function
     function _clearBox( ) {
       boxes = [];
     }
@@ -153,6 +155,23 @@ angular.module('musicPlayerApp')
 
       getPeriodInfo: function () {
         return periodInfo;
-      } 
+      },
+
+      // Archive Feature
+      archive: function () {
+        var clock = {
+          rootDirectory: editorService.getRootDirectory(),
+          periodInfo: editorService.getPeriodInfo(),
+          boxes:  editorService.getBoxList()
+        };
+        return clock;
+      },
+
+      recover: function (clock) {
+        rootDirectory = clock.rootDirectory,
+        periodInfo = clock.periodInfo,
+        boxes = clock.boxes;
+        $rootScope.$emit('rootDirectoryChangeEvent', 'recover');
+      }
     };
 }]);
