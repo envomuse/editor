@@ -23,7 +23,7 @@ angular.module('musicPlayerApp')
       $scope.boxList = editorService.getBoxList();
       $scope.periodInfo = editorService.getPeriodInfo();
     }
-    
+
     $scope.playSong = function  (argument) {
     	// body...
     	playerServie.playMp3();
@@ -39,8 +39,8 @@ angular.module('musicPlayerApp')
       $location.path('/box/'+box.name);
     };
 
-    $scope.onFileSelected = function (file) {
-      console.log('onFileSelected');
+    $scope.onRootDirectorySelected = function (file) {
+      console.log('onRootDirectorySelected');
       editorService.setRootDirectory(file.path);
     };
 
