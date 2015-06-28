@@ -46,7 +46,8 @@
                   <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
                   <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
                   <li class="divider"></li>
-                  <li><a ng-click="openFile()"> 生成工作包</a></li>
+                  <li> <div file-dialog saveas accept=".envowar"  on-file-selected="exportPackage" title = '生成工作包'/> </li>
+
                 </ul>
               </div>
             </div>
@@ -99,7 +100,7 @@
     <script src="scripts/services/configservice.js"></script>
     <script src="scripts/services/logservice.js"></script>
     <script src="scripts/directives/filedialog.js"></script>
-    <script src="scripts/services/editorservice.js"></script>
+    <script src="scripts/services/clockService.js"></script>
     <script src="scripts/controllers/box.js"></script>
     <script src="scripts/controllers/period.js"></script>
     <script src="scripts/filters/periodinfofilter.js"></script>

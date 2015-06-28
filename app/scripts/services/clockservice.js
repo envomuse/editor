@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc service
- * @name musicPlayerApp.editorService
+ * @name musicPlayerApp.clockService
  * @description
- * # editorService
+ * # clockService
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('editorService', ['$rootScope', '$q', 'lodash', 'playerServie', function ($rootScope, $q, lodash, playerServie) {
+  .factory('clockService', ['$rootScope', '$q', 'lodash', 'playerServie', function ($rootScope, $q, lodash, playerServie) {
     // Service logic
     // ...
     var walk = require('walk'),
@@ -158,6 +158,10 @@ angular.module('musicPlayerApp')
       },
 
       // Archive Feature
+      valid: function () {
+        return rootDirectory.length > 3;
+      },
+
       archive: function () {
         var clock = {
           rootDirectory: rootDirectory,

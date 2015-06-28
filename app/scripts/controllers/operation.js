@@ -48,4 +48,11 @@ angular.module('musicPlayerApp')
 
       $scope.setCurrentEnvFile (file.path);
     };
+
+    $scope.exportPackage = function (file) {
+      // body...
+      console.log('exportPackage file');
+      archiveService.exportPackage(file.path); 
+    };
+    
   }]);

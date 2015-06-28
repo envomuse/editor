@@ -8,20 +8,20 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('MainCtrl',['$rootScope', '$scope', '$location', 'logService', 'authServie', 'playerServie', 'editorService', 'dbservice', 
-  	function ($rootScope, $scope, $location, logService, authServie, playerServie, editorService, dbservice) {
+  .controller('MainCtrl',['$rootScope', '$scope', '$location', 'logService', 'authServie', 'playerServie', 'clockService', 'dbservice', 
+  	function ($rootScope, $scope, $location, logService, authServie, playerServie, clockService, dbservice) {
 
     $scope.init = function () {
       console.log('MainCtrl init');
-      var rootDir = editorService.getRootDirectory();
+      var rootDir = clockService.getRootDirectory();
       if (false && rootDir.length < 10) {
         rootDir = '/Users/i071628/meanStack/github/musicPackage/';
-        editorService.setRootDirectory(rootDir);
+        clockService.setRootDirectory(rootDir);
       };
 
-      $scope.rootDirectory = editorService.getRootDirectory();
-      $scope.boxList = editorService.getBoxList();
-      $scope.periodInfo = editorService.getPeriodInfo();
+      $scope.rootDirectory = clockService.getRootDirectory();
+      $scope.boxList = clockService.getBoxList();
+      $scope.periodInfo = clockService.getPeriodInfo();
     }
 
     $scope.playSong = function  (argument) {
@@ -41,13 +41,13 @@ angular.module('musicPlayerApp')
 
     $scope.onRootDirectorySelected = function (file) {
       console.log('onRootDirectorySelected');
-      editorService.setRootDirectory(file.path);
+      clockService.setRootDirectory(file.path);
     };
 
     $scope.refreshRootDirectory = function () {
       console.log('refreshRootDirectory');
       if ($scope.rootDirectory) {
-        editorService.refresh();
+        clockService.refresh();
       }
     };
 
@@ -55,12 +55,12 @@ angular.module('musicPlayerApp')
       if (!$scope.$$phase) {
         //$digest or $apply
         $scope.$apply(function () {
-          $scope.rootDirectory = editorService.getRootDirectory();
-          $scope.boxList = editorService.getBoxList();
+          $scope.rootDirectory = clockService.getRootDirectory();
+          $scope.boxList = clockService.getBoxList();
         });
       } else {
-        $scope.rootDirectory = editorService.getRootDirectory();
-        $scope.boxList = editorService.getBoxList();
+        $scope.rootDirectory = clockService.getRootDirectory();
+        $scope.boxList = clockService.getBoxList();
       }
       
     });

@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('archiveService', ['editorService', '$log', function (editorService, $log) {
+  .factory('archiveService', ['clockService', '$log', function (clockService, $log) {
     // Service logic
     // ...
  
@@ -18,19 +18,31 @@ angular.module('musicPlayerApp')
     return {
       saveAs: function (filepath) {
         $log.log('saveAs filepath', filepath);
-        var clock = editorService.archive();
-        if (!clock.rootDirectory) {
-          alert('请设置工作目录');
+
+        if (!clockService.valid()) {
+          alert('Clock无效');
           return;
         };
- 
+
+        var clock = clockService.archive();
         jsonfile.writeFileSync(filepath, clock, {flag: 'w'});
       },
 
       recoverFrom: function (filepath) {
         $log.log('recoverFrom filepath', filepath);
         var clock = jsonfile.readFileSync(filepath);
-        editorService.recover(clock);
+        clockService.recover(clock);
+      },
+
+      exportPackage: function (filepath) {
+        $log.log('exportPackage');
+        if (!clockService.valid()) {
+          alert('Clock无效');
+          return;
+        };
+
+        // generate json first
+        
       }
     };
   }]);
