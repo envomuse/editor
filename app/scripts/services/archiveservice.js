@@ -12,7 +12,7 @@ angular.module('musicPlayerApp')
     // Service logic
     // ...
  
-    var jsonfile = require('jsonfile')
+    var jsonfile = require('jsonfile');
 
     // Public API here
     return {
@@ -24,7 +24,7 @@ angular.module('musicPlayerApp')
           return;
         };
  
-        jsonfile.writeFileSync(filepath, clock, {flag: 'w'}); 
+        jsonfile.writeFileSync(filepath, clock, {flag: 'w'});
       },
 
       recoverFrom: function (filepath) {

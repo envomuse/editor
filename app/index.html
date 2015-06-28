@@ -17,49 +17,52 @@
   </head>
   <body ng-app="musicPlayerApp">
     <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
     <!-- Add your site or application content here -->
-    <div class="header hidden">
-      <div class="navbar navbar-default" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
+    <div class="header">
+      <div class="container">
+        <div ng-controller="OperationCtrl">
+          <div class="row">
+            <div class="col-md-9">
+              <h3> 当前Envo文件:  </h3>
+              {{currentEnvFile}}
+            </div>
 
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
+            <div class="col-md-1" ng-show="currentEnvFile.length > 4">
+              <div type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-save-file " ng-click="saveEnvoFile()" aria-hidden="true"></span>
+              </div>
+            </div>
 
-            <a class="navbar-brand" href="#/">musicPlayer</a>
-          </div>
+            
+            <div class="col-md-2">
+              <div class="btn-group" dropdown dropdown-append-to-body>
+                <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
+                  操作 <span class="caret"></span>
+                </button>
 
-          <div class="collapse navbar-collapse" id="js-navbar-collapse">
-
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#/">Home</a></li>
-              <li><a ng-href="#/about">About</a></li>
-              <li><a ng-href="#/">Contact</a></li>
-            </ul>
+                <ul class="dropdown-menu" role="menu">
+                  <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
+                  <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
+                  <li class="divider"></li>
+                  <li><a ng-click="openFile()"> 生成工作包</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
     <div class="container">
-    <div ng-view=""></div>
+      <div ng-view=""></div>
     </div>
-
     <div class="footer">
       <div class="container">
         <p><span class="glyphicon glyphicon-heart"></span> Envomuse Editor</p>
       </div>
     </div>
-
     <!-- build:js(.) scripts/vendor.js -->
-
     <!-- bower:js -->
     <script src="../bower_components/jquery/dist/jquery.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
@@ -81,43 +84,39 @@
     <script src="../bower_components/angular-moment/angular-moment.js"></script>
     <script src="../bower_components/buzz/dist/buzz.js"></script>
     <!-- endbower -->
-
     <script src="scripts/libs/angular-locale_zh-cn.js"></script>
     <!-- endbuild -->
-
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
-        <script src="scripts/services/authservie.js"></script>
-        <script src="scripts/services/playerservie.js"></script>
-        <script src="scripts/services/utilservice.js"></script>
-        <script src="scripts/services/dbservice.js"></script>
-        <script src="scripts/decorators/logdecorator.js"></script>
-        <script src="scripts/services/backendservice.js"></script>
-        <script src="scripts/services/configservice.js"></script>
-        <script src="scripts/services/logservice.js"></script>
-        <script src="scripts/directives/filedialog.js"></script>
-        <script src="scripts/services/editorservice.js"></script>
-        <script src="scripts/controllers/box.js"></script>
-        <script src="scripts/controllers/period.js"></script>
-        <script src="scripts/filters/periodinfofilter.js"></script>
-        <script src="scripts/filters/durationfilter.js"></script>
-        <script src="scripts/controllers/operation.js"></script>
-        <script src="scripts/services/archiveservice.js"></script>
-        <!-- endbuild -->
-
-      <script type="text/javaScript">
-        var ua = navigator.userAgent.toLocaleLowerCase();
-        console.log('ua:', ua);
-        if (ua.indexOf('music') >= 0) {
-          var gulp = require('gulp');
-          gulp.task('reload', function () {
-            if (location) location.reload();
-          });
-
-          gulp.watch('./app/**/*', ['reload']);
-        };
-      </script>
-</body>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/services/authservie.js"></script>
+    <script src="scripts/services/playerservie.js"></script>
+    <script src="scripts/services/utilservice.js"></script>
+    <script src="scripts/services/dbservice.js"></script>
+    <script src="scripts/decorators/logdecorator.js"></script>
+    <script src="scripts/services/backendservice.js"></script>
+    <script src="scripts/services/configservice.js"></script>
+    <script src="scripts/services/logservice.js"></script>
+    <script src="scripts/directives/filedialog.js"></script>
+    <script src="scripts/services/editorservice.js"></script>
+    <script src="scripts/controllers/box.js"></script>
+    <script src="scripts/controllers/period.js"></script>
+    <script src="scripts/filters/periodinfofilter.js"></script>
+    <script src="scripts/filters/durationfilter.js"></script>
+    <script src="scripts/controllers/operation.js"></script>
+    <script src="scripts/services/archiveservice.js"></script>
+    <!-- endbuild -->
+    <script type="text/javaScript">
+    var ua = navigator.userAgent.toLocaleLowerCase();
+    console.log('ua:', ua);
+    if (ua.indexOf('music') >= 0) {
+    var gulp = require('gulp');
+    gulp.task('reload', function () {
+    if (location) location.reload();
+    });
+    gulp.watch('./app/**/*', ['reload']);
+    };
+    </script>
+  </body>
 </html>

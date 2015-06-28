@@ -160,9 +160,9 @@ angular.module('musicPlayerApp')
       // Archive Feature
       archive: function () {
         var clock = {
-          rootDirectory: editorService.getRootDirectory(),
-          periodInfo: editorService.getPeriodInfo(),
-          boxes:  editorService.getBoxList()
+          rootDirectory: rootDirectory,
+          periodInfo: periodInfo,
+          boxes:  boxes
         };
         return clock;
       },
