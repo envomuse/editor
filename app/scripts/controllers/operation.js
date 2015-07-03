@@ -52,7 +52,11 @@ angular.module('musicPlayerApp')
     $scope.exportPackage = function (file) {
       // body...
       console.log('exportPackage file');
-      archiveService.exportPackage(file.path); 
+      var option = {
+        brand: 'CocoCola',
+        creator: 'ting'
+      };
+      archiveService.exportPackage(file.path, option); 
     };
     
   }]);

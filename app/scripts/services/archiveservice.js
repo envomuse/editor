@@ -8,7 +8,8 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('archiveService', ['clockService', 'lodash', '$log', function (clockService, _, $log) {
+  .factory('archiveService', ['clockService', 'lodash', '$q', '$log', 
+    function (clockService, _, $q, $log) {
     // Service logic
     // ...
     var path = require('path'),
@@ -16,7 +17,8 @@ angular.module('musicPlayerApp')
       crypto = require('crypto'),
       gui = require('nw.gui'),
       randomstring = require("randomstring"),
-      jsonfile = require('jsonfile');
+      jsonfile = require('jsonfile'),
+      archiver = require('archiver');
 
     console.log('gui.App.dataPath is: ',gui.App.dataPath);
 
@@ -55,7 +57,11 @@ angular.module('musicPlayerApp')
         clockService.recover(clock);
       },
 
-      exportPackage: function (filepath) {
+      exportPackage: function (filepath, option) {
+        console.log('filepath:', filepath);
+
+        var deferred = $q.defer();
+
         $log.log('exportPackage');
         if (!clockService.valid()) {
           alert('Clock无效');
@@ -63,10 +69,12 @@ angular.module('musicPlayerApp')
         };
 
         // generate json first
+        var ASSETNAME = 'asset';
         var tmpRootDir = getTempDir(),
-            assetDir = path.join(tmpRootDir, 'asset'),
-            boxDir = '';
-        console.log('tmpRootDir:', tmpRootDir);
+            assetDir = path.join(tmpRootDir, ASSETNAME),
+            musicEditorPath = path.join(tmpRootDir, 'musicEditor.json');
+             
+        $log.info('tmpRootDir:', tmpRootDir);
 
         // create Asset Dir
         $log.info("Create Asset Directory");
@@ -74,13 +82,13 @@ angular.module('musicPlayerApp')
 
         // Copy All music to Asset Dir
         $log.info("Scan music meta info and do check");
-        var clock = clockService.archive();
+        var srcBoxes = clockService.getBoxList();
         var md5, hash, targetRelativePath, trackInfo;
         var allTargetRelativePath = [],
-            trackInfoCache = {};
+            trackInfoCache = {},
+            path2trackInfo = {};
         
-        _.each(clock.boxes, function (box) {
-          // boxDir = path.join(assetDir, box.name), 
+        _.each(srcBoxes, function (box) {
 
           _.each(box.songList, function (track) {
             // calc hash(md5) of track
@@ -109,6 +117,7 @@ angular.module('musicPlayerApp')
                 fromBoxs: [box.name]
               };
               trackInfoCache[hash] = trackInfo;
+              path2trackInfo[track.path] = trackInfo;
               allTargetRelativePath.push(targetRelativePath); 
             }
 
@@ -129,46 +138,100 @@ angular.module('musicPlayerApp')
 
         $log.info("Copy music to Asset Directory:", assetDir);
         _.forEach(_.values(trackInfoCache), function (trackInfo) {
-          // fs.copySync(trackInfo.srcPath, trackInfo.targetPath);
-          $log.debug(trackInfo.srcPath, trackInfo.targetPath);
+          fs.copySync(trackInfo.srcPath, trackInfo.targetPath);
+          // $log.debug(trackInfo.srcPath, trackInfo.targetPath);
         });
 
-        // generate musicEditor.json 
 
+        $log.info("Collect Boxes Info");
+        // Collect Boxes Info
+        var boxes = [];
+        var tracks = [];
+        _.each(srcBoxes, function (box) {
+          tracks = [];
+          _.each(box.songList, function (track) {
+            tracks.push(path2trackInfo[track.path].hash);
+          });
+
+          boxes.push({
+            name: box.name,
+            totalLength: box.totalLength,
+            startTm: box.startTm,
+            endTm: box.endTm,
+            tracks: tracks
+          });
+        });
+
+        // Generate One dateTemplate
+        var dateTemplate = {
+          clock: {
+            boxes: boxes
+          },
+          periodInfo: clockService.getPeriodInfo()
+        };
         
+        // dump to musicEditor
+        var tracksMeta = _.mapValues(trackInfoCache, function(trackInfo) {
+          return _.omit(trackInfo, ['srcPath', 'targetPath']);
+        });
 
-        // rootDirectory: rootDirectory,
-        //   periodInfo: periodInfo,
-        //   boxes:  boxes
+        $log.info("Generate musicEditor.json");
+        var musicEditor = {
+          "uuid": randomstring.generate(10),
+          "creator": option.creator,
+          "created": new Date(),
+          "brand": option.brand,
+          "type": 'simplified',
+          'dateTemplates': [dateTemplate],
+          'tracksMeta' : tracksMeta
+        };
 
-        // // generate musicEditor.json
-        // var clock = clockService.archive();
-        // var musicEditor = {
-        //   "creator": "Auto",
-        //   "brand": "cocacola",
-        //   "type": 'simple',
-        //   'clocks': [clock]
-        // };
-        // // Collect Boxes Info
-        // var boxes = [];
-        // var tracks = [];
-        // angular.each(clock.boxes, function (box) {
-        //   boxes.push({
-        //     name: box.name,
-        //     totalLength: box.totalLength,
-        //     startTm: box.startTm,
-        //     endTm: box.endTm
-        //   });
+        fs.writeJsonSync(musicEditorPath, musicEditor);
 
-        //   angular.each(box.songList, function (song) {
-        //     song.
-        //   })
-
-          
-          
-        // })
+        $log.info("Generate final zip");
         
+        // Zip tmpRootDir
+        var zipFileDtd = $q.defer();
+        var tmpZipFilePath = path.join(tmpRootDir, 'target.zip'); 
+        var tmpZipFile = fs.createWriteStream(tmpZipFilePath);
+        tmpZipFile.on('finish', function (finish) {
+          console.log('finish:', finish);
+        });
+        tmpZipFile.on('close', function () {
+          $log.info(archive.pointer() + ' total bytes');
+          $log.info('archiver has been finalized and the output file descriptor has closed.');
+          zipFileDtd.resolve();
+        });
 
+        var archive = archiver.create('zip', {});
+        archive.directory(assetDir, ASSETNAME);
+        archive.file(musicEditorPath, {name: 'musicEditor.json'});
+        archive.on('error', function(err){
+          $log.error(err);
+          zipFileDtd.reject(err);
+        });
+        archive.pipe(tmpZipFile);
+        archive.finalize();
+        
+        zipFileDtd.promise.then(function () {
+          //
+          $log.info("Rename", typeof filepath, filepath);
+          fs.move(tmpZipFilePath, filepath, function (err) {
+            if (err) {
+              $log.error(err);
+              deferred.reject(err);
+              return;
+            }
+
+            $log.info("Done");
+            deferred.resolve();
+
+            // Clear tmpRootDir
+            fs.remove(tmpRootDir);
+          });
+        });
+
+        return deferred.promise;
       }
     };
   }]);
