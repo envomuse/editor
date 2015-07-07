@@ -154,6 +154,7 @@ angular.module('musicPlayerApp')
           });
 
           boxes.push({
+            uuid: randomstring.generate(10),
             name: box.name,
             totalLength: box.totalLength,
             startTm: box.startTm,
@@ -164,6 +165,7 @@ angular.module('musicPlayerApp')
 
         // Generate One dateTemplate
         var dateTemplate = {
+          name: '随便写的',
           clock: {
             boxes: boxes
           },
@@ -181,6 +183,7 @@ angular.module('musicPlayerApp')
           "creator": option.creator,
           "created": new Date(),
           "brand": option.brand,
+          "name": option.name,
           "type": 'simplified',
           'dateTemplates': [dateTemplate],
           'tracksMeta' : tracksMeta

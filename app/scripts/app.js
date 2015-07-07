@@ -19,6 +19,7 @@ angular
     'ngLodash',
     'angularMoment',
     'ui.bootstrap',
+    'dialogs.main',
     "com.2fdevs.videogular",
     "com.2fdevs.videogular.plugins.controls",
     "com.2fdevs.videogular.plugins.overlayplay",

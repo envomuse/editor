@@ -9,6 +9,7 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/angular-dialog-service/dist/dialogs.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -46,7 +47,7 @@
                   <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
                   <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
                   <li class="divider"></li>
-                  <li> <div file-dialog saveas accept=".zip"  on-file-selected="exportPackage" title = '生成工作包'/> </li>
+                  <li> <div ng-click="openExportDialog()" class="btn btn-default" > 生成工作包 </div> </li>
 
                 </ul>
               </div>
@@ -84,6 +85,10 @@
     <script src="../bower_components/moment/moment.js"></script>
     <script src="../bower_components/angular-moment/angular-moment.js"></script>
     <script src="../bower_components/buzz/dist/buzz.js"></script>
+    <script src="../bower_components/angular-dialog-service/dist/dialogs.js"></script>
+    <script src="../bower_components/angular-dialog-service/dist/dialogs-default-translations.js"></script>
+  
+
     <!-- endbower -->
     <script src="scripts/libs/angular-locale_zh-cn.js"></script>
     <!-- endbuild -->

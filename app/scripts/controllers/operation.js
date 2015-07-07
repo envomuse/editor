@@ -8,8 +8,8 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('OperationCtrl', ['$rootScope', '$scope', 'archiveService',
-   function ($rootScope, $scope, archiveService) {
+  .controller('OperationCtrl', ['$rootScope', '$scope', 'archiveService', 'dialogs',
+   function ($rootScope, $scope, archiveService, dialogs) {
 	$scope.currentEnvFile = '';
 
 	$scope.setCurrentEnvFile = function (currentEnvFile) {
@@ -49,14 +49,27 @@ angular.module('musicPlayerApp')
       $scope.setCurrentEnvFile (file.path);
     };
 
-    $scope.exportPackage = function (file) {
-      // body...
-      console.log('exportPackage file');
-      var option = {
-        brand: 'CocoCola',
-        creator: 'ting'
-      };
-      archiveService.exportPackage(file.path, option); 
+    $scope.openExportDialog = function () {
+      dialogs.create('views/exportSetting.html','ExportPackageCtrl',
+        {},
+        {size:'md'});
+      return;
     };
     
-  }]);
+  }])
+.controller('ExportPackageCtrl', ['$rootScope', '$scope', 'archiveService', '$log',
+   function ($rootScope, $scope, archiveService, $log) {
+    $scope.name = '';
+    $scope.brand = '';
+    $scope.creator = '';
+
+    $scope.exportPackage = function (file) {
+      $log.log('exportPackage file');
+      var option = {
+        name: $scope.name,
+        brand: $scope.brand,
+        creator: $scope.creator
+      };
+      archiveService.exportPackage(file.path, option); 
+    }
+   }]);

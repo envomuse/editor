@@ -1,0 +1,38 @@
+<p class="center-block"> 设置工作包 </p>
+<div class="row">
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label for="packageName" class="col-sm-4 control-label">工作包名称</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" ng-model="name" id="packageName" placeholder="KFC-JOB1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="brand" class="col-sm-4 control-label">品牌</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" ng-model="brand" id="brand" placeholder="KFC">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="creator" class="col-sm-4 control-label">创建人</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" ng-model="creator" id="creator" placeholder="Ting">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label"></label>
+        <div class="col-sm-6">
+            <div file-dialog saveas accept=".zip"  on-file-selected="exportPackage" title = '生成工作包'/>
+        </div>
+      </div>
+    </form>
+</div>
+<br>
+
+
+
+
+
+      
