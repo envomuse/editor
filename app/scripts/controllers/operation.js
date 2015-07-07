@@ -57,19 +57,26 @@ angular.module('musicPlayerApp')
     };
     
   }])
-.controller('ExportPackageCtrl', ['$rootScope', '$scope', 'archiveService', '$log',
-   function ($rootScope, $scope, archiveService, $log) {
+.controller('ExportPackageCtrl', ['$rootScope', '$scope', 'utilService', 'archiveService', '$log',
+   function ($rootScope, $scope, utilService, archiveService, $log) {
     $scope.name = '';
     $scope.brand = '';
     $scope.creator = '';
 
     $scope.exportPackage = function (file) {
       $log.log('exportPackage file');
+
+      utilService.showLoading();
+      clockService.setRootDirectory(file.path)
+      
       var option = {
         name: $scope.name,
         brand: $scope.brand,
         creator: $scope.creator
       };
-      archiveService.exportPackage(file.path, option); 
+      archiveService.exportPackage(file.path, option)
+      .finally(function () {
+        utilService.hideLoading();
+      });
     }
    }]);

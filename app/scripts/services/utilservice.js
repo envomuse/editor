@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('utilService', function () {
+  .factory('utilService', ['$rootScope', function ($rootScope) {
     // Service logic
     // ...
 
@@ -37,6 +37,14 @@ angular.module('musicPlayerApp')
       isNW: function (argument) {
         var ua = navigator.userAgent.toLocaleLowerCase();
         return ua.indexOf('music') >= 0; 
+      },
+
+      showLoading: function () {
+        $rootScope.showLoading = true;
+      },
+
+      hideLoading: function () {
+        $rootScope.showLoading = false;
       }
     };
-  });
+  }]);

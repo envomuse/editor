@@ -8,8 +8,8 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('MainCtrl',['$rootScope', '$scope', '$location', 'logService', 'authServie', 'playerServie', 'clockService', 'dbservice', 
-  	function ($rootScope, $scope, $location, logService, authServie, playerServie, clockService, dbservice) {
+  .controller('MainCtrl',['$rootScope', '$scope', '$location', '$q', 'utilService', 'logService', 'authServie', 'playerServie', 'clockService', 'dbservice', 
+  	function ($rootScope, $scope, $location, $q, utilService, logService, authServie, playerServie, clockService, dbservice) {
 
     $scope.init = function () {
       console.log('MainCtrl init');
@@ -41,7 +41,11 @@ angular.module('musicPlayerApp')
 
     $scope.onRootDirectorySelected = function (file) {
       console.log('onRootDirectorySelected');
-      clockService.setRootDirectory(file.path);
+      utilService.showLoading();
+      clockService.setRootDirectory(file.path)
+      .finally(function () {
+        utilService.hideLoading();
+      });
     };
 
     $scope.refreshRootDirectory = function () {

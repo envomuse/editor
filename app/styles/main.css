@@ -123,3 +123,25 @@ body {
     cursor: inherit;
     display: block;
 }
+
+/**For loading**/
+.loadingContainer {
+  display: block;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  z-index: 10000;
+  background-color: rgba(245, 245, 245, 0.6);
+}
+.loadingContainer >div {
+  height: 40px !important;
+}
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
