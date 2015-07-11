@@ -16,6 +16,7 @@ angular.module('musicPlayerApp')
       fs = require('fs-extra'),
       crypto = require('crypto'),
       gui = require('nw.gui'),
+      async = require('async'),
       randomstring = require("randomstring"),
       jsonfile = require('jsonfile'),
       archiver = require('archiver');
@@ -58,12 +59,9 @@ angular.module('musicPlayerApp')
       },
 
       exportPackage: function (filepath, option) {
-        $log.info('filepath:', filepath);
+        $log.info('exportPackage filepath:', filepath);
 
         var deferred = $q.defer();
-
-
-        $log.info('exportPackage');
         if (!clockService.valid()) {
           deferred.reject('Clock无效2');
           $log.warn('Clock无效2');
@@ -82,158 +80,215 @@ angular.module('musicPlayerApp')
         $log.info("Create Asset Directory");
         fs.mkdirSync(assetDir);
 
-        // Copy All music to Asset Dir
-        $log.info("Scan music meta info and do check");
         var srcBoxes = clockService.getBoxList();
         var md5, hash, targetRelativePath, trackInfo;
         var allTargetRelativePath = [],
             trackInfoCache = {},
             path2trackInfo = {};
-        
-        _.each(srcBoxes, function (box) {
+        var tmpZipFilePath;
 
-          _.each(box.songList, function (track) {
-            // calc hash(md5) of track
-            md5 = crypto.createHash('md5');
-            md5.update(fs.readFileSync(track.path));
-            hash = md5.digest('hex');
-            trackInfo = trackInfoCache[hash];
+        var fnGatherInfo = function (callback) {
+          $log.info("fnGatherInfo");
+          var hashDeferArr = [];
+          // hashDeferArr.push($q.defer().promise);
 
-            if (trackInfo) {
-              trackInfo.fromBoxs.push(box.name);
-            } else {
-              targetRelativePath = path.join(box.name, track.name);
-              if (allTargetRelativePath.indexOf(targetRelativePath) >= 0) {
-                randomstring.generate(5);
-                targetRelativePath = path.join(box.name, randomstring.generate(5), '_', track.name);
-              }
+          _.each(srcBoxes, function (box) {
+            _.each(box.songList, function (track) {
+              var hashDefer = $q.defer();
+              hashDeferArr.push(hashDefer.promise);
 
-              // targetRelativePath
-              trackInfo = {
-                name: track.name,
-                srcPath: track.path,
-                targetRelativePath: targetRelativePath,
-                targetPath: path.join(assetDir, targetRelativePath),
-                duration: track.duration,
-                hash: hash,
-                fromBoxs: [box.name]
-              };
-              trackInfoCache[hash] = trackInfo;
-              path2trackInfo[track.path] = trackInfo;
-              allTargetRelativePath.push(targetRelativePath); 
-            }
+              // calc hash(md5) of track
+              var md5 = crypto.createHash('md5');
+              fs.readFile(track.path, function (err, data) {
+                if (err) {
+                  return hashDefer.reject({filepath: track.path, error: err});
+                }
 
+                md5.update(data);
+                var hash = md5.digest('hex');
+                trackInfo = trackInfoCache[hash];
+
+                $log.info('hash is:', hash);
+
+                if (trackInfo) {
+                  trackInfo.fromBoxs.push(box.name);
+                } else {
+                  targetRelativePath = path.join(box.name, track.name);
+                  if (allTargetRelativePath.indexOf(targetRelativePath) >= 0) {
+                    randomstring.generate(5);
+                    targetRelativePath = path.join(box.name, randomstring.generate(5), '_', track.name);
+                  }
+
+                  // targetRelativePath
+                  trackInfo = {
+                    name: track.name,
+                    srcPath: track.path,
+                    targetRelativePath: targetRelativePath,
+                    targetPath: path.join(assetDir, targetRelativePath),
+                    duration: track.duration,
+                    hash: hash,
+                    fromBoxs: [box.name]
+                  };
+                  trackInfoCache[hash] = trackInfo;
+                  path2trackInfo[track.path] = trackInfo;
+                  allTargetRelativePath.push(targetRelativePath); 
+                }
+
+                hashDefer.resolve();
+              })
+
+            });
           });
-        });
+
+          $q.all(hashDeferArr)
+          .then(function () {
+            $log.info('arguments is:', arguments);
+
+            callback(null);
+          }, function (err) {
+            callback(err);
+          });
+        };
+        
 
         // check trackInfoCache
-        $log.info("Check music assert"); _.pluck(_.values(trackInfoCache), 'srcPath');
-        var invalidTracks = _.filter(_.pluck(_.values(trackInfoCache), 'srcPath'), 
-          function (trackSrcPath) {
-            return !fs.existsSync(trackSrcPath);
+        var fnCheckTrackInfo = function (callback) {
+          $log.info("Check music assert"); _.pluck(_.values(trackInfoCache), 'srcPath');
+          var srcPathArr = _.pluck(_.values(trackInfoCache), 'srcPath');
+
+          async.filter(srcPathArr, fs.exists
+            , function(results){
+              // results now equals an array of the existing files
+              if (results.length === srcPathArr.length) {
+                return callback(null);
+              } else {
+                var invalidTracks = _.difference(srcPathArr, results)
+                return callback('存在无效歌曲'+invalidTracks.toString());
+              }
           });
-        if (invalidTracks.length) {
-          deferred.reject('无效歌曲:', invalidTracks.toString());
-          return deferred.promise;
         };
         
+        var fnCopyTrack = function (fnCallback) {
+          $log.info("fnCopyTrack Copy music to Asset Directory:", assetDir);
 
-        $log.info("Copy music to Asset Directory:", assetDir);
-        _.forEach(_.values(trackInfoCache), function (trackInfo) {
-          fs.copySync(trackInfo.srcPath, trackInfo.targetPath);
-          // $log.debug(trackInfo.srcPath, trackInfo.targetPath);
-        });
-
-
-        $log.info("Collect Boxes Info");
-        // Collect Boxes Info
-        var boxes = [];
-        var tracks = [];
-        _.each(srcBoxes, function (box) {
-          tracks = [];
-          _.each(box.songList, function (track) {
-            tracks.push(path2trackInfo[track.path].hash);
+          var taskArray = _.map(_.values(trackInfoCache), function (trackInfo) {
+            return function (callback) {
+              fs.copy(trackInfo.srcPath, trackInfo.targetPath, function (err) {
+                $log.debug(trackInfo.srcPath, trackInfo.targetPath);
+                if (err) {
+                  return callback(err);
+                }
+                return callback(null);
+              });
+            };
           });
 
-          boxes.push({
-            uuid: randomstring.generate(10),
-            name: box.name,
-            totalLength: box.totalLength,
-            startTm: box.startTm,
-            endTm: box.endTm,
-            tracks: tracks
+          async.parallel(taskArray, fnCallback);
+        };
+
+        var fnGenerateMusicEditor = function (callback) {
+          $log.info("fnGenerateMusicEditor");
+          
+          // Collect Boxes Info
+          var boxes = [];
+          var tracks = [];
+          _.each(srcBoxes, function (box) {
+            tracks = [];
+            _.each(box.songList, function (track) {
+              tracks.push(path2trackInfo[track.path].hash);
+            });
+
+            boxes.push({
+              uuid: randomstring.generate(10),
+              name: box.name,
+              totalLength: box.totalLength,
+              startTm: box.startTm,
+              endTm: box.endTm,
+              tracks: tracks
+            });
           });
-        });
 
-        // Generate One dateTemplate
-        var dateTemplate = {
-          name: '随便写的',
-          clock: {
-            boxes: boxes
-          },
-          periodInfo: clockService.getPeriodInfo()
+          // Generate One dateTemplate
+          var dateTemplate = {
+            name: '随便写的',
+            clock: {
+              boxes: boxes
+            },
+            periodInfo: clockService.getPeriodInfo()
+          };
+          
+          // dump to musicEditor
+          var tracksMeta = _.mapValues(trackInfoCache, function(trackInfo) {
+            return _.omit(trackInfo, ['srcPath', 'targetPath']);
+          });
+
+          $log.info("Generate musicEditor.json");
+          var musicEditor = {
+            "uuid": randomstring.generate(10),
+            "creator": option.creator,
+            "created": new Date(),
+            "brand": option.brand,
+            "name": option.name,
+            "type": 'simplified',
+            'dateTemplates': [dateTemplate],
+            'tracksMeta' : tracksMeta
+          };
+
+          fs.writeJson(musicEditorPath, musicEditor, callback);
         };
-        
-        // dump to musicEditor
-        var tracksMeta = _.mapValues(trackInfoCache, function(trackInfo) {
-          return _.omit(trackInfo, ['srcPath', 'targetPath']);
-        });
 
-        $log.info("Generate musicEditor.json");
-        var musicEditor = {
-          "uuid": randomstring.generate(10),
-          "creator": option.creator,
-          "created": new Date(),
-          "brand": option.brand,
-          "name": option.name,
-          "type": 'simplified',
-          'dateTemplates': [dateTemplate],
-          'tracksMeta' : tracksMeta
+        var fnGenerateFinalzip = function (callback) {
+        
+          $log.info("Generate final zip");
+          tmpZipFilePath = path.join(tmpRootDir, 'target.zip'); 
+          var tmpZipFile = fs.createWriteStream(tmpZipFilePath);
+          tmpZipFile.on('finish', function (finish) {
+            console.log('finish:', finish);
+          });
+          tmpZipFile.on('close', function () {
+            $log.info(archive.pointer() + ' total bytes');
+            $log.info('archiver has been finalized and the output file descriptor has closed.');
+            callback(null, tmpZipFilePath);
+          });
+
+          var archive = archiver.create('zip', {});
+          archive.directory(assetDir, ASSETNAME);
+          archive.file(musicEditorPath, {name: 'musicEditor.json'});
+          archive.on('error', function(err){
+            $log.error(err);
+            callback(err);
+          });
+          archive.pipe(tmpZipFile);
+          archive.finalize();
         };
 
-        fs.writeJsonSync(musicEditorPath, musicEditor);
-
-        $log.info("Generate final zip");
-        
-        // Zip tmpRootDir
-        var zipFileDtd = $q.defer();
-        var tmpZipFilePath = path.join(tmpRootDir, 'target.zip'); 
-        var tmpZipFile = fs.createWriteStream(tmpZipFilePath);
-        tmpZipFile.on('finish', function (finish) {
-          console.log('finish:', finish);
-        });
-        tmpZipFile.on('close', function () {
-          $log.info(archive.pointer() + ' total bytes');
-          $log.info('archiver has been finalized and the output file descriptor has closed.');
-          zipFileDtd.resolve();
-        });
-
-        var archive = archiver.create('zip', {});
-        archive.directory(assetDir, ASSETNAME);
-        archive.file(musicEditorPath, {name: 'musicEditor.json'});
-        archive.on('error', function(err){
-          $log.error(err);
-          zipFileDtd.reject(err);
-        });
-        archive.pipe(tmpZipFile);
-        archive.finalize();
-        
-        zipFileDtd.promise.then(function () {
-          //
+        var fnMoveFinalzip = function (callback) {
           $log.info("Rename", typeof filepath, filepath);
-          fs.move(tmpZipFilePath, filepath, function (err) {
+          fs.move(tmpZipFilePath, filepath, callback);
+        };
+
+        var fnClearTmpFiles = function (callback) {
+          $log.info("fnClearTmpFiles:", tmpRootDir);
+          fs.remove(tmpRootDir, callback);
+        };
+
+        async.series([fnGatherInfo, 
+          fnCheckTrackInfo, 
+          fnCopyTrack, 
+          fnGenerateMusicEditor,
+          fnGenerateFinalzip,
+          fnMoveFinalzip,
+          fnClearTmpFiles
+        ],
+        // optional callback
+        function(err){
             if (err) {
-              $log.error(err);
-              deferred.reject(err);
-              return;
+              $log.error("exportPackage");
+              return deferred.reject(err);
             }
 
             $log.info("Done");
             deferred.resolve();
-
-            // Clear tmpRootDir
-            fs.remove(tmpRootDir);
-          });
         });
 
         return deferred.promise;
