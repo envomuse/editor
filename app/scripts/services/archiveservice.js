@@ -20,7 +20,7 @@ angular.module('musicPlayerApp')
       jsonfile = require('jsonfile'),
       archiver = require('archiver');
 
-    console.log('gui.App.dataPath is: ',gui.App.dataPath);
+    $log.info('gui.App.dataPath is: ',gui.App.dataPath);
 
     function getTempDir() {
       var tempAppDataPath = path.join(gui.App.dataPath, 'temp');
@@ -40,10 +40,10 @@ angular.module('musicPlayerApp')
     // Public API here
     return {
       saveAs: function (filepath) {
-        $log.log('saveAs filepath', filepath);
+        $log.info('saveAs filepath', filepath);
 
         if (!clockService.valid()) {
-          alert('Clock无效');
+          $log.warn('Clock无效1');
           return;
         };
 
@@ -52,20 +52,22 @@ angular.module('musicPlayerApp')
       },
 
       recoverFrom: function (filepath) {
-        $log.log('recoverFrom filepath', filepath);
+        $log.info('recoverFrom filepath', filepath);
         var clock = jsonfile.readFileSync(filepath);
         clockService.recover(clock);
       },
 
       exportPackage: function (filepath, option) {
-        console.log('filepath:', filepath);
+        $log.info('filepath:', filepath);
 
         var deferred = $q.defer();
 
-        $log.log('exportPackage');
+
+        $log.info('exportPackage');
         if (!clockService.valid()) {
-          alert('Clock无效');
-          return;
+          deferred.reject('Clock无效2');
+          $log.warn('Clock无效2');
+          return deferred.promise;
         };
 
         // generate json first
@@ -131,8 +133,8 @@ angular.module('musicPlayerApp')
             return !fs.existsSync(trackSrcPath);
           });
         if (invalidTracks.length) {
-          alert('无效歌曲:', invalidTracks);
-          return;
+          deferred.reject('无效歌曲:', invalidTracks.toString());
+          return deferred.promise;
         };
         
 

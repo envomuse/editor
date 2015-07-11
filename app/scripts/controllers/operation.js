@@ -50,15 +50,24 @@ angular.module('musicPlayerApp')
     };
 
     $scope.openExportDialog = function () {
-      dialogs.create('views/exportSetting.html','ExportPackageCtrl',
+      var dlg = dialogs.create('views/exportSetting.html','ExportPackageCtrl',
         {},
         {size:'md'});
+      dlg.result.then(function (result) {
+        if (result.value === 'success') {
+          alert('生成成功!'+ result.filepath);
+        } else {
+          alert(result.error);
+        }
+      }, function () {
+        // alert('cancel'); 
+      })
       return;
     };
     
   }])
-.controller('ExportPackageCtrl', ['$rootScope', '$scope', 'utilService', 'archiveService', '$log',
-   function ($rootScope, $scope, utilService, archiveService, $log) {
+.controller('ExportPackageCtrl', ['$rootScope', '$scope', '$modalInstance', 'utilService', 'archiveService', '$log',
+   function ($rootScope, $scope, $modalInstance, utilService, archiveService, $log) {
     $scope.name = '';
     $scope.brand = '';
     $scope.creator = '';
@@ -67,14 +76,25 @@ angular.module('musicPlayerApp')
       $log.log('exportPackage file');
 
       utilService.showLoading();
-      clockService.setRootDirectory(file.path)
-      
+
       var option = {
         name: $scope.name,
         brand: $scope.brand,
         creator: $scope.creator
       };
       archiveService.exportPackage(file.path, option)
+      .then(function () {
+        $modalInstance.close({
+          value: 'success',
+          filepath: file.path
+        });
+      }, function (err) {
+        // alert('失败', err);
+        $modalInstance.close({
+          value: 'fail',
+          error: err
+        });
+      })
       .finally(function () {
         utilService.hideLoading();
       });

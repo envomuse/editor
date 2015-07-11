@@ -40,11 +40,25 @@ angular.module('musicPlayerApp')
       },
 
       showLoading: function () {
-        $rootScope.showLoading = true;
+        if (!$rootScope.$$phase) {
+          //$digest or $apply
+          $rootScope.$apply(function () {
+            $rootScope.showLoading = true;
+          });
+        } else {
+          $rootScope.showLoading = true;
+        }
       },
 
       hideLoading: function () {
-        $rootScope.showLoading = false;
+        if (!$rootScope.$$phase) {
+          //$digest or $apply
+          $rootScope.$apply(function () {
+            $rootScope.showLoading = false;
+          });
+        } else {
+          $rootScope.showLoading = false;
+        }
       }
     };
   }]);
