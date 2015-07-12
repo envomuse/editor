@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('backendService', ['$http', function ($http) {
+  .factory('backendService', ['$http', $log, function ($http, $log) {
     // Service logic
     // ...
 
@@ -35,8 +35,21 @@ angular.module('musicPlayerApp')
         return $http.get(BackendUrl+'jingoList');
       },
 
-      getPlaylist: function(version) {
-        return $http.get(BackendUrl+'playlist?version='+version);
+      getPrograms: function() {
+        $log.info('get program general info');
+
+        return $http.get(BackendUrl+'playlists')
+        .then(function (resp) {
+          var playlists = resp.data;
+          return playlists;
+        });
+        // return $http.get(BackendUrl+'playlists');
+      },
+
+      getProgramDetail: function(playlistId) {
+        $log.info('sync program:', playlistId);
+        
+        return $http.get(BackendUrl+'playlists/'+playlistId);
       },
 
       getMusic: function(songId) {

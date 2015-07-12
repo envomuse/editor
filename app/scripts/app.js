@@ -47,8 +47,8 @@ angular
         redirectTo: '/main'
       });
   })
-  .run(['$rootScope', '$interval', '$log', 'configService',
-   function($rootScope, $interval, $log, configService) {
+  .run(['$rootScope', '$interval', '$log', 'configService', 'syncService',
+   function($rootScope, $interval, $log, configService, syncService) {
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
       
     });
@@ -58,6 +58,14 @@ angular
     then(function(config) {
       $log.log(config);
     });
+
+    syncService.checkServerProgram()
+    then(function() {
+      syncService.sync();
+    });
+
+    
+
 
   }]);
 
