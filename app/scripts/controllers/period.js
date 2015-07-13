@@ -14,10 +14,12 @@ angular.module('musicPlayerApp')
       $scope.periodInfo = periodInfo;
       $scope.dt = new Date();
     };
+
     $scope.init();
 
     $scope.changeCalcType = function() {
       console.log('changeCalcType');
+      console.log($scope.periodInfo.calcType);
     };
 
     $scope.addMultipleDatesValues = function(inDate) {

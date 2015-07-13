@@ -6,7 +6,7 @@
 }
 
 body {
-  padding: 0;
+  padding: 15px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -144,4 +144,22 @@ body {
 
   display: flex;
   align-items: center;
+}
+
+.dropdown-menu{
+  padding:10px;
+}
+
+.dropdown-menu div{
+  margin:5px;
+}
+
+.m-b{
+  margin-bottom: 20px;
+}
+.m-b-sm{
+  margin-bottom: 10px;
+}
+.m-r-xs{
+  margin-right: 5px;
 }

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="no-js">
   <head>
     <meta charset="utf-8">
@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="musicPlayerApp">
+
+  <body ng-app="musicPlayerApp" ng-controller="OperationCtrl">
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -41,49 +42,59 @@
         </div>
     </div>
 
-    <div class="header">
-      <div class="container">
-        <div ng-controller="OperationCtrl">
-          <div class="row">
+    <div class="header container">
+        <div class="row">
             <div class="col-md-9">
-              <h3> 当前Envo文件:  </h3>
-              {{currentEnvFile}}
+                <h3> ENVOMUSE品牌音乐编排系统 </h3>
             </div>
 
-            <div class="col-md-1" ng-show="currentEnvFile.length > 4">
-              <div type="button" class="btn btn-info">
-                <span class="glyphicon glyphicon-save-file " ng-click="saveEnvoFile()" aria-hidden="true"></span>
-              </div>
+            <div class="col-md-3">
+                <a ng-href="#/main" class="btn btn-primary" tooltip="首页">
+                    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                </a>
+                <div class="btn-group" dropdown dropdown-append-to-body>
+                    <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
+                    操作 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li> <i class="glyphicon glyphicon-folder-open"></i><div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'></div> </li>
+                        <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'></div> </li>
+                        <li class="divider"></li>
+                        <li> <div ng-click="openExportDialog()" class="btn btn-default" > 生成工作包 </div> </li>
+                    </ul>
+                </div>
             </div>
+        </div>
 
-            
-            <div class="col-md-2">
-              <div class="btn-group" dropdown dropdown-append-to-body>
-                <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
-                  操作 <span class="caret"></span>
-                </button>
+        </div>
+    </div>
 
-                <ul class="dropdown-menu" role="menu">
-                  <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
-                  <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
-                  <li class="divider"></li>
-                  <li> <div ng-click="openExportDialog()" class="btn btn-default" > 生成工作包 </div> </li>
+    <div class="container">
 
-                </ul>
-              </div>
+        <div class="row m-b">
+          <div class="col-md-10">
+            <span class="label label-default m-r">当前文件</span>
+            <span>{{currentEnvFile}}</span>
+          </div>
+
+          <div class="col-md-1" ng-show="currentEnvFile.length > 4">
+            <div type="button" class="btn btn-success">
+              <span class="glyphicon glyphicon-save-file " tooltip="保存" ng-click="saveEnvoFile()" aria-hidden="true"></span>
             </div>
           </div>
-        </div>
       </div>
-    </div>
-    <div class="container">
+
       <div ng-view=""></div>
+
     </div>
+
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> Envomuse Editor</p>
+        <span class="pull-right"><i class="glyphicon glyphicon-copyright-mark"></i>2015 版权所有</span>
+        <span><i class="glyphicon glyphicon-calendar"></i> Envomuse Program Editor</span>
       </div>
     </div>
+    
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="../bower_components/jquery/dist/jquery.js"></script>

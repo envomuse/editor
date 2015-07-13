@@ -1,53 +1,68 @@
 <div class="row">
-  <div class="col-md-6">
-    <h3> Clock编辑器 </h3>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Clock编辑器
+    </div>
+    <div class="panel-body">
+      <div class="col-md-2">
+        <div file-dialog  webkitdirectory on-file-selected="onRootDirectorySelected" title = 'Clock目录'/>
+        </div>
+        <div class="col-md-1">
+          <span class="glyphicon glyphicon-refresh gi-m" ng-click="refreshRootDirectory()" aria-hidden="true"></span>
+        </div>
+        <div class="col-md-8">
+          {{rootDirectory}}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+
 <div class="row">
-  <div class="col-md-2">
-    <div file-dialog  webkitdirectory on-file-selected="onRootDirectorySelected" title = 'Clock目录'/>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      设置
     </div>
-    <div class="col-md-1">
-      <span class="glyphicon glyphicon-refresh gi-m" ng-click="refreshRootDirectory()" aria-hidden="true"></span>
-    </div>
-    <div class="col-md-8">
-      {{rootDirectory}}
+    <div class="panel-body">
+      <div class="col-md-4">
+        <a ng-href="#/period" class="btn btn-default" >播放周期</a>
+        {{periodInfo.calcType | periodInfoFilter}}
+      </div>
     </div>
   </div>
-  <h3> 设置 </h3>
-  <div class="row">
-    <div class="col-md-4">
-      <a ng-href="#/period" class="btn btn-default" >
-      播放周期 </span>
-    </a>
-    {{periodInfo.calcType | periodInfoFilter}}
-  </div>
-  
 </div>
-<h3> box列表 </h3>
+
 <div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>box名字</th>
-          <th>歌曲数目</th>
-          <th>总时长</th>
-          <th>开始时间</th>
-          <th>结束时间</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="box in boxList" ng-click="openBoxDetail(box)">
-          <td>{{$index + 1}}</td>
-          <td>{{box.name}}</td>
-          <td>{{box.songList.length}}</td>
-          <td>{{box.totalLength | durationFilter}}</td>
-          <td>{{box.startTm | date:'shortTime'}}</td>
-          <td>{{box.endTm | date:'shortTime'}}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      曲风盒列表
+    </div>
+    <div class="panel-body">
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>曲风盒</th>
+              <th>曲数目</th>
+              <th>开始时间</th>
+              <th>结束时间</th>
+              <th>总时长</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="box in boxList" ng-click="openBoxDetail(box)">
+              <td>{{$index + 1}}</td>
+              <td>{{box.name}}</td>
+              <td>{{box.songList.length}}</td>
+              <td>{{box.startTm | date:'shortTime'}}</td>
+              <td>{{box.endTm | date:'shortTime'}}</td>
+              <td>{{box.totalLength | durationFilter}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
