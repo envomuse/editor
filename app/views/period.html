@@ -96,7 +96,7 @@
 			<div class="col-md-6">
 				<h5>结束日期<br/> <em>{{periodInfo.dateRangeValues.endDate | date:'fullDate' }}</em> </h5>
 				<div style="display:inline-block; min-height:290px;">
-					<datepicker ng-model="periodInfo.dateRangeValues.endDate" min-date=" " show-weeks="false" class="well well-sm"></datepicker>
+					<datepicker ng-model="periodInfo.dateRangeValues.endDate" min-date="periodInfo.dateRangeValues.startDate" show-weeks="false" class="well well-sm"></datepicker>
 				</div>
 			</div>
 		</div>

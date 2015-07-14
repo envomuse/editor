@@ -69,8 +69,38 @@ angular.module('musicPlayerApp')
       
     });
 
+    $scope.setTimeLine = function(boxList){
+
+      if(boxList.length>0)
+      {
+        // console.log(boxList);
+        var clock = boxList.filter(function(e){
+          return (typeof e.startTm!=='undefined') && (typeof e.endTm!=='undefined');
+        }).map(function(e){
+        
+            return {
+              title:e.name,
+              start:e.startTm,
+              end:e.endTm,
+              /*start:defaultDateStr.concat(e.startTm.substring(10)),
+              end:defaultDateStr.concat(e.endTm.substring(10)),*/
+              color: '#'+(Math.random()*0xFFFFFF<<0).toString(16)
+            };
+      });
+
+        if(clock.length>0){
+            $('#hourly').timestack({
+            span: 'hour',
+            data:  clock
+          });  
+        }
+      }
+    }
 
     // init all
     $scope.init();
+
+    //set timeline
+    $scope.setTimeLine(clockService.getBoxList());
     
   }]);

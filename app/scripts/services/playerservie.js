@@ -96,7 +96,7 @@ angular.module('musicPlayerApp')
             metaInfo = {
               duration: sound.getDuration()
             };
-            console.log('duration:', metaInfo.duration);
+            console.log('duration:', metaInfo.duration, musicFile);
             deferred.resolve(metaInfo);
           });
         } else {

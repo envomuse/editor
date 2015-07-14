@@ -64,5 +64,15 @@ angular.module('musicPlayerApp')
             controller.config.sources = controller.videos[index].sources;
             $timeout(controller.API.play.bind(controller.API), 100);
         };
+    
+      $scope.changeStart = function(){
+        var mEnd = new moment($scope.box.endTm);
+        var mStart = new moment($scope.box.startTm);
+
+        if(mEnd.isBefore(mStart))
+          {
+           $scope.box.endTm = $scope.box.startTm;
+          }
+      };
 
   }]);

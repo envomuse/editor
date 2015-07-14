@@ -13,7 +13,7 @@ angular.module('musicPlayerApp')
     // Service logic
     // ...
     var configStore = dbservice.getDataStore('config');
-
+    
     // Public API here
     return {
       getConfig: function () {

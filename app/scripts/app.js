@@ -43,6 +43,9 @@ angular
         templateUrl: 'views/period.html',
         controller: 'PeriodCtrl'
       })
+      .when('/help', {
+        templateUrl: 'views/help.html'
+      })
       .otherwise({
         redirectTo: '/main'
       });
@@ -54,11 +57,11 @@ angular
     });
     
     //Start Timer
-    configService.getConfig().
+    /*configService.getConfig().
     then(function(config) {
       $log.log(config);
     });
-
+*/
   }]);
 
 

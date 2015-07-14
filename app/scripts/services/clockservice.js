@@ -119,6 +119,7 @@ angular.module('musicPlayerApp')
           console.log('all done with no promises');
           $rootScope.$emit('rootDirectoryChangeEvent', '');
           deferred.resolve();
+          // return; 
         } else {
           $q.all(promises)
           .then(function () {
