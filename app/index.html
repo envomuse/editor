@@ -20,7 +20,7 @@
     <!-- endbuild -->
   </head>
 
-  <body ng-app="musicPlayerApp" ng-controller="OperationCtrl">
+  <body ng-app="musicPlayerApp">
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="header container">
+    <div class="header container" ng-controller="OperationCtrl">
         <div class="row">
             <div class="col-md-9">
                 <h3> ENVOMUSE品牌音乐编排系统 </h3>
@@ -126,6 +126,7 @@
 
     <!-- endbower -->
     <script src="scripts/libs/angular-locale_zh-cn.js"></script>
+    <script src="scripts/libs/timestack.min.js"></script>
     <!-- endbuild -->
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
@@ -147,7 +148,6 @@
     <script src="scripts/filters/durationfilter.js"></script>
     <script src="scripts/controllers/operation.js"></script>
     <script src="scripts/services/archiveservice.js"></script>
-    <script src="scripts/libs/timestack.min.js"></script>
     <!-- endbuild -->
     <script type="text/javaScript">
     var ua = navigator.userAgent.toLocaleLowerCase();

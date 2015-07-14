@@ -24,16 +24,6 @@ angular.module('musicPlayerApp')
       $scope.periodInfo = clockService.getPeriodInfo();
     }
 
-    $scope.playSong = function  (argument) {
-    	// body...
-    	playerServie.playMp3();
-    };
-
-    $scope.playFlac = function  (argument) {
-    	// body...
-    	playerServie.playFlac();
-    };
-
     $scope.openBoxDetail = function(box) {
       console.log('open box:', box);
       $location.path('/box/'+box.name);

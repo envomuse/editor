@@ -75,11 +75,6 @@ angular.module('musicPlayerApp')
     $scope.exportPackage = function (file) {
       $log.log('exportPackage file');
 
-      if($scope.name==='' || $scope.brand==='' || $scope.creator===''){
-        alert('必须输入基本信息');
-        return;
-      }
-      
       utilService.showLoading();
 
       var option = {

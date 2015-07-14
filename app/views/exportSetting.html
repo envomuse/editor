@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" ng-show="name.length >0 && brand.length >0 && creator.length >0">
         <label class="col-sm-4 control-label"></label>
         <div class="col-sm-6">
             <div file-dialog saveas accept=".zip" on-file-selected="exportPackage" title = '生成工作包'/>
