@@ -45,6 +45,7 @@ angular.module('musicPlayerApp')
 
         if (!clockService.valid()) {
           $log.warn('Clock无效1');
+          alert('Clock无效1');
           return;
         };
 
