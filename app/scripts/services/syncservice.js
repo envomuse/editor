@@ -8,8 +8,8 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('syncService', ['$log', 'lodash', 'backendService', 'programService'
-    , function ($log, _, backendService, programService) {
+  .factory('syncService', ['$log', '$q', 'lodash', 'backendService', 'programModelService','trackModelService'
+    , function ($log, $q, _, backendService, programModelService, trackModelService) {
     // Service logic
     // ...
 
@@ -25,17 +25,16 @@ angular.module('musicPlayerApp')
 
         backendService.getPrograms()
         .then(function(programs) {
-          var missingPrograms = [];
           async.each(programs
             ,function (program, callback) {
-              programService.getById(program._id)
-              .then(function (program) {
-                if (program) {
+              programModelService.getById(program._id)
+              .then(function (programRec) {
+                if (!programRec) {
                   if (missingPrograms.indexOf(program._id) < 0) {
-                    missingPrograms.push(program._id);
+                    missingPrograms.push(program);
                   };
                 };
-
+                callback(null);
               });
             }, function (err) {
               if (err) {
@@ -51,7 +50,7 @@ angular.module('musicPlayerApp')
       },
 
       syncProgram: function () {
-        $log.info('syncProgram');
+        $log.info('syncProgram', missingPrograms);
 
         if (isSyncingProgram) {
           return ;
@@ -64,7 +63,6 @@ angular.module('musicPlayerApp')
                 var tobeSyncProgram = missingPrograms.pop(0);
                 backendService.getProgramDetail(tobeSyncProgram._id)
                 .then(function (program) {
-                  missingPrograms.
                   // store it to db
                   programService.insert(program, callback);
                 });
@@ -80,11 +78,11 @@ angular.module('musicPlayerApp')
         );
 
         return deferred.promise;
-      }
+      },
 
       sync: function () {
         $log.info('sync');
-        syncProgram();
+        this.syncProgram();
       }
     };
   }]);

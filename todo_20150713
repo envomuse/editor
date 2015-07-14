@@ -1,0 +1,29 @@
+1/ 没有输入name，barnd等信息时不允许生成工作包
+2/ box页面里，正在播放的单曲右边控制钮显示成“正在播放”状态
+3/ box页面里，正在播放的单曲的名字显示在播放条
+4/ box页面里，为了便于dj工作（在一个box内包含大量歌曲，当实际上只使用部分），每条音轨前提供checkbox按钮，用于表示在这个工作包里应用（低优先级，这样做的另一个好处是用于完善曲库）
+5/ 
+
+
+
+
+1. header function:
+a. show login/logout action
+b. global status: notifications#
+
+2. content:
+  2.1 head (action in current context (ui adaptive) )
+            and current board general info, like title, path etc
+  2.2 main content (detail content)
+  2.3 nav (optional): pagnigate
+
+
+
+*1. add current path
+*2. hide some info during edit mode(both create new and edit)
+*3. when save finished, popup tips
+
+
+dialog.messagebox('');
+
+notification() 

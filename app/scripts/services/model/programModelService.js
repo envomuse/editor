@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('programService', ['dbservice', 'backendService', '$q', '$log',
+  .factory('programModelService', ['dbservice', 'backendService', '$q', '$log',
     function (dbservice, backendService, $q, $log) {
     // Service logic
     // ...

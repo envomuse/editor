@@ -24,7 +24,7 @@ angular.module('musicPlayerApp')
         if (storeName in dataStoreCollection) {
           return dataStoreCollection[storeName];
         };
-        var db = new Datastore({ filename: path.join(DataPath, 'music.db'),
+        var db = new Datastore({ filename: path.join(DataPath, storeName),
             autoload: true });
         dataStoreCollection[storeName] = db;
         return db;

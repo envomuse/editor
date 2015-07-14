@@ -54,13 +54,13 @@ angular
     });
     
     //Start Timer
-    configService.getConfig().
-    then(function(config) {
-      $log.log(config);
-    });
+    // configService.getConfig().
+    // then(function(config) {
+    //   $log.log(config);
+    // });
 
     syncService.checkServerProgram()
-    then(function() {
+    .then(function() {
       syncService.sync();
     });
 
