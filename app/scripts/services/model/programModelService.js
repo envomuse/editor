@@ -17,8 +17,7 @@ angular.module('musicPlayerApp')
     // Public API here
     return {
       getById: function (programId, callback) {
-        var deferred = $q.defer(),
-        self = this;
+        var deferred = $q.defer();
         programStore.findOne({_id: programId}, function(err, doc) {
           if (angular.isFunction(callback)) {
             callback(err, doc);
@@ -52,8 +51,38 @@ angular.module('musicPlayerApp')
         return deferred.promise;
       },
 
-      getPlaylist: function (whichDay) {
+      queryPrograms: function (startDate, endDate, callback) {
+        var deferred = $q.defer();
+        programStore.find({
+          $or: [ {startDate: {
+            $gte: startDate,
+            $lte: endDate,
+          }}, {endDate: {
+            $gte: startDate,
+            $lte: endDate,
+          }} ]
+          
+        })
+        .sort('-created')
+        .exec(function(err, programs) {
+          if (angular.isFunction(callback)) {
+            callback(err, programs);
+          }
+          if (err) {
+            $log.error('find programs error');
+            deferred.reject(err);
+            return;
+          };
 
-      }
+          // Sort Program if needed
+          deferred.resolve(programs);
+        });
+
+        return deferred.promise;
+      },
+
+      getStore: function () {
+        return programStore;
+      },
     };
   }]);

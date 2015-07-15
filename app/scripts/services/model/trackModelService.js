@@ -16,10 +16,12 @@ angular.module('musicPlayerApp')
 
     // Public API here
     return {
-      getTrackById: function () {
-        var deferred = $q.defer(),
-        self = this;
-        trackStore.findOne({}, function(err, doc) {
+      getTrackById: function (trackId, callback) {
+        var deferred = $q.defer();
+        trackStore.findOne({_id: trackId}, function(err, doc) {
+          if (angular.isFunction(callback)) {
+            callback(err, doc);
+          }
           if (err) {
             $log.error('failed to find track');
             deferred.reject();
@@ -31,6 +33,30 @@ angular.module('musicPlayerApp')
           };
         });
         return deferred.promise;
+      },
+
+      getByIdArray: function (idArray, callback) {
+        var deferred = $q.defer();
+        trackStore.find(
+          {_id: { $in: idArray}}, 
+
+          function(err, docs) {
+            if (angular.isFunction(callback)) {
+              callback(err, docs);
+            }
+            if (err) {
+              $log.error('failed to find tracks');
+              deferred.reject();
+              return;
+            }
+            if (docs) {
+              deferred.resolve(docs);
+              return;
+            };
+          });
+
+        return deferred.promise;
       }
+
     };
   }]);
