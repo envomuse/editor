@@ -18,25 +18,26 @@ angular.module('musicPlayerApp')
 
     // private variable
     var rootDirectory = '',
-    periodInfo = {
-      calcType: "daysOfWeek",
-      daysOfWeekValues: {
-        'Mon': true, 
-        'Tue': true,
-        'Wed': true, 
-        'Thur': true, 
-        'Fri': true, 
-        'Sat': false, 
-        'Sun': false
-      },
-      dateRangeValues: {
-        'startDate': new Date(),
-        'endDate': new Date()
-      },
-      multipleDatesValues: [new Date(),],
-    },
-    boxes = [];
+        periodInfo = {
+          calcType: "daysOfWeek",
+          daysOfWeekValues: {
+            'Mon': true, 
+            'Tue': true,
+            'Wed': true, 
+            'Thur': true, 
+            'Fri': true, 
+            'Sat': false, 
+            'Sun': false
+          },
+          dateRangeValues: {
+            'startDate': new Date(),
+            'endDate': new Date()
+          },
+          multipleDatesValues: [new Date(),],
+        },
+        boxes = [];
 
+      var dateTemplateArr = [];
 
     // private function
     function _clearBox( ) {
@@ -135,6 +136,10 @@ angular.module('musicPlayerApp')
 
       getRootDirectory: function() {
         return rootDirectory;
+      },
+
+      getDateTemplateArray: function(){
+        return dateTemplateArr;
       },
 
       getBoxList: function() {

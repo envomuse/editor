@@ -43,6 +43,27 @@
         </div>
     </div>
 
+    <!-- sidebar -->
+    <div class="col-md-2" ng-controller="GlobalCtrl">
+        <ul id="sidebar" class="nav nav-stacked affix">
+          <li>日期模板列表</li>
+          <li ng-repeat="dt in dateTemplatesArr"><a href="#">{{dt}}</a></li>
+          <li><a ng-href="#/main" ><i class="glyphicon glyphicon-plus m-r-xs"></i>添加</a></li>
+        </ul>
+    </div>
+    <script>
+          $('#myAffix').affix({
+            offset: {
+              top: 100,
+              bottom: function () {
+                return (this.bottom = $('.footer').outerHeight(true));
+              }
+            }
+          })
+    </script>
+    <!-- /sidebar -->
+
+    <div class="col-md-10">
     <div class="header container" ng-controller="OperationCtrl">
         <div class="row">
             <div class="col-md-9">
@@ -50,7 +71,7 @@
             </div>
 
             <div class="col-md-3">
-                <a ng-href="#/main" class="btn btn-primary" tooltip="首页">
+                <a ng-href="#/index" class="btn btn-primary" tooltip="首页">
                     <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                 </a>
                 <a ng-href="#/help" class="btn btn-primary" tooltip="帮助">
@@ -69,12 +90,9 @@
                 </div>
             </div>
         </div>
-
-        </div>
     </div>
 
     <div class="container">
-
         <div class="row m-b">
           <div class="col-md-10">
             <span class="label label-default m-r">当前工作文件</span>
@@ -86,10 +104,13 @@
               <span class="glyphicon glyphicon-save-file " tooltip="保存" ng-click="saveEnvoFile()" aria-hidden="true"></span>
             </div>
           </div>
-      </div>
+        </div>
+    </div>
 
-      <div ng-view=""></div>
-
+    <div class="container">
+        <div class="row m-b">
+            <div ng-view=""></div>
+        </div>
     </div>
 
     <div class="footer">
@@ -98,6 +119,9 @@
         <span><i class="glyphicon glyphicon-calendar"></i> Envomuse Program Editor</span>
       </div>
     </div>
+
+    </div>
+    </body>
     
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->

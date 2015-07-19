@@ -47,7 +47,7 @@ angular
         templateUrl: 'views/help.html'
       })
       .otherwise({
-        redirectTo: '/main'
+        redirectTo: '/index'
       });
   })
   .run(['$rootScope', '$interval', '$log', 'configService',

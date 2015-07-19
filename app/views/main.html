@@ -1,23 +1,31 @@
 <div class="row">
   <div class="panel panel-default">
     <div class="panel-heading">
-      第一步：设置工作目录
+      第一步：设置日期模板名称及曲风盒目录
     </div>
     <div class="panel-body">
-      <div class="col-md-2">
-        <div file-dialog  webkitdirectory on-file-selected="onRootDirectorySelected" title = 'Clock目录'/>
+      <div class="row">
+          <div class="col-md-6">
+          <form class="navbar-form navbar-left">
+          <div class="form-group">
+            <label>名称</label>
+            <input type="text" class="form-control" placeholder="日期模板名称...">
+          </div>
+        </form>
         </div>
-        <div class="col-md-1">
-          <span class="glyphicon glyphicon-refresh gi-m" ng-click="refreshRootDirectory()" aria-hidden="true"></span>
+        <div class="col-md-6">
+          <div file-dialog  webkitdirectory on-file-selected="onRootDirectorySelected" title = 'Clock目录'/>
+          </div><i class="glyphicon glyphicon-refresh gi-m" ng-click="refreshRootDirectory()" aria-hidden="true"></i>
         </div>
-        <div class="col-md-8">
-          {{rootDirectory}}
-        </div>
+      </div>
+      <div class="row">
+      <div class="col-md-10 clear">
+        当前目录 {{rootDirectory}}
+      </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <div class="row">
   <div class="panel panel-default">

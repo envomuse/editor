@@ -12,7 +12,11 @@ angular.module('musicPlayerApp')
   	function ($rootScope, $scope, $location, $q, utilService, logService, authServie, playerServie, clockService, dbservice) {
 
     $scope.init = function () {
+
       console.log('MainCtrl init');
+
+      // var dateTemplatesArr = clockService.getDateTemplateArray();
+
       var rootDir = clockService.getRootDirectory();
       if (false && rootDir.length < 10) {
         rootDir = '/Users/i071628/meanStack/github/musicPackage/';
@@ -92,5 +96,15 @@ angular.module('musicPlayerApp')
 
     //set timeline
     $scope.setTimeLine(clockService.getBoxList());
+    
+  }])
+.controller('GlobalCtrl',['$rootScope', '$scope', '$location', 'clockService',
+    function ($rootScope, $scope, $location, clockService) {
+
+    $scope.init = function () {
+      $scope.dateTemplatesArr = clockService.getDateTemplateArray();
+    }
+
+    $scope.init();
     
   }]);

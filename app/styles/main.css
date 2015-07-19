@@ -172,3 +172,13 @@ body {
 .text-mute{
   font-size:11px;
 }
+#sidebar.affix-top {
+  position: static;
+  margin-top:30px;
+  width:200px;
+} 
+#sidebar.affix {
+  position: fixed;
+  top:70px;
+  width:200px;
+}
