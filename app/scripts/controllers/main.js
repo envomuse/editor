@@ -8,103 +8,113 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('MainCtrl',['$rootScope', '$scope', '$location', '$q', 'utilService', 'logService', 'authServie', 'playerServie', 'clockService', 'dbservice', 
-  	function ($rootScope, $scope, $location, $q, utilService, logService, authServie, playerServie, clockService, dbservice) {
+  .controller('MainCtrl', ['$rootScope', '$scope', '$location', '$log', '$q', 'utilService', 'logService', 'dialogs', 'dateTemplateService',
+    function($rootScope, $scope, $location, $log, $q, utilService, logService, dialogs, dateTemplateService) {
 
-    $scope.init = function () {
+      $log.debug(111);
 
-      console.log('MainCtrl init');
-
-      // var dateTemplatesArr = clockService.getDateTemplateArray();
-
-      var rootDir = clockService.getRootDirectory();
-      if (false && rootDir.length < 10) {
-        rootDir = '/Users/i071628/meanStack/github/musicPackage/';
-        clockService.setRootDirectory(rootDir);
-      };
-
-      $scope.rootDirectory = clockService.getRootDirectory();
-      $scope.boxList = clockService.getBoxList();
-      $scope.periodInfo = clockService.getPeriodInfo();
-    }
-
-    $scope.openBoxDetail = function(box) {
-      console.log('open box:', box);
-      $location.path('/box/'+box.name);
-    };
-
-    $scope.onRootDirectorySelected = function (file) {
-      console.log('onRootDirectorySelected');
-      utilService.showLoading();
-      clockService.setRootDirectory(file.path)
-      .finally(function () {
-        utilService.hideLoading();
-      });
-    };
-
-    $scope.refreshRootDirectory = function () {
-      console.log('refreshRootDirectory');
-      if ($scope.rootDirectory) {
-        clockService.refresh();
-      }
-    };
-
-    $rootScope.$on('rootDirectoryChangeEvent', function (evt, file) {
-      if (!$scope.$$phase) {
-        //$digest or $apply
-        $scope.$apply(function () {
-          $scope.rootDirectory = clockService.getRootDirectory();
-          $scope.boxList = clockService.getBoxList();
-        });
-      } else {
-        $scope.rootDirectory = clockService.getRootDirectory();
-        $scope.boxList = clockService.getBoxList();
-      }
-      
-    });
-
-    $scope.setTimeLine = function(boxList){
-
-      if(boxList.length>0)
-      {
-        // console.log(boxList);
-        var clock = boxList.filter(function(e){
-          return (typeof e.startTm!=='undefined') && (typeof e.endTm!=='undefined');
-        }).map(function(e){
-        
-            return {
-              title:e.name,
-              start:e.startTm,
-              end:e.endTm,
-              /*start:defaultDateStr.concat(e.startTm.substring(10)),
-              end:defaultDateStr.concat(e.endTm.substring(10)),*/
-              color: '#'+(Math.random()*0xFFFFFF<<0).toString(16)
-            };
-      });
-
-        if(clock.length>0){
-            $('#hourly').timestack({
-            span: 'hour',
-            data:  clock
-          });  
+      // Sidebar operation
+      $scope.updateDateTemplateArr = function() {
+        $scope.dateTemplatesArr = dateTemplateService.getDateTemplateArray();
+        $scope.dateTemplate = dateTemplateService.getActiveDateTemplate();
+        if ($scope.dateTemplate) {
+          $scope.setTimeLine($scope.dateTemplate.getBoxList());
         }
       }
+
+      $scope.setActiveDateTemplateDialog = function(dateTemplate) {
+        dateTemplateService.setActiveDateTemplate(dateTemplate.name);
+        return;
+      };
+
+      $scope.openCreateNewDateTemplateDialog = function() {
+        var dlg = dialogs.create('views/newDateTemplate.html', 'NewDateTemplateCtrl', {}, {
+          size: 'md'
+        });
+        dlg.result.then(function(result) {
+          if (result.value === 'success') {
+            // alert('生成成功!'+ result.filepath);
+            $scope.updateDateTemplateArr();
+          } else {
+            // alert(result.error);
+          }
+        }, function() {
+          // alert('cancel'); 
+        })
+        return;
+      };
+
+      $scope.init = function() {
+
+        console.log('MainCtrl init');
+        $scope.updateDateTemplateArr();
+      }
+
+      // Active DateTemplate Operation
+      $scope.openBoxDetail = function(box) {
+        console.log('open box:', box);
+        $location.path('/box/' + box.name);
+      };
+
+      $scope.onRootDirectorySelected = function(file) {
+        $log.info('onRootDirectorySelected');
+        utilService.showLoading();
+        $scope.dateTemplate.setRootDirectory(file.path)
+          // clockService.setRootDirectory(file.path)
+          .finally(function() {
+            utilService.hideLoading();
+          });
+      };
+
+      $scope.refreshRootDirectory = function() {
+        // console.log('refreshRootDirectory');
+        // if ($scope.rootDirectory) {
+        //   // clockService.refresh();
+        // }
+      };
+
+
+      $rootScope.$on('activeDateTemplateChangeEvent', function(evt) {
+        if (!$scope.$$phase) {
+          //$digest or $apply
+          $scope.$apply(function() {
+            $scope.updateDateTemplateArr();
+          });
+        } else {
+          $scope.updateDateTemplateArr();
+        }
+
+      });
+
+      $scope.setTimeLine = function(boxList) {
+        $log.debug('setTimeLine');
+
+        if (boxList.length > 0) {
+          // console.log(boxList);
+          var clock = boxList.filter(function(e) {
+            return (typeof e.startTm !== 'undefined') && (typeof e.endTm !== 'undefined');
+          }).map(function(e) {
+
+            return {
+              title: e.name,
+              start: e.startTm,
+              end: e.endTm,
+              /*start:defaultDateStr.concat(e.startTm.substring(10)),
+              end:defaultDateStr.concat(e.endTm.substring(10)),*/
+              color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
+            };
+          });
+
+          if (clock.length > 0) {
+            $('#hourly').timestack({
+              span: 'hour',
+              data: clock
+            });
+          }
+        }
+      }
+
+      // init all
+      $scope.init();
     }
-
-    // init all
-    $scope.init();
-
-    //set timeline
-    $scope.setTimeLine(clockService.getBoxList());
-    
-  }])
-.controller('GlobalCtrl',['$rootScope', '$scope', '$location', 'clockService',
-    function ($rootScope, $scope, $location, clockService) {
-
-    $scope.init = function () {
-      $scope.dateTemplatesArr = clockService.getDateTemplateArray();
-    }
-
-    $scope.init();
-    
-  }]);
+  ]);

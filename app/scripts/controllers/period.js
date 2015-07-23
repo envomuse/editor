@@ -8,8 +8,9 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('PeriodCtrl', ['$scope', 'clockService', 'lodash' , function ($scope, clockService, lodash) {
-    var periodInfo = clockService.getPeriodInfo();
+  .controller('PeriodCtrl', ['$scope', 'dateTemplateService', 'lodash' , function ($scope, dateTemplateService, lodash) {
+    var curDateTemplate = dateTemplateService.getActiveDateTemplate();
+    var periodInfo = curDateTemplate.getPeriodInfo();
     $scope.init = function() {
       $scope.periodInfo = periodInfo;
       $scope.dt = new Date();

@@ -37,8 +37,6 @@ angular.module('musicPlayerApp')
         },
         boxes = [];
 
-      var dateTemplateArr = [];
-
     // private function
     function _clearBox( ) {
       boxes = [];
@@ -138,9 +136,6 @@ angular.module('musicPlayerApp')
         return rootDirectory;
       },
 
-      getDateTemplateArray: function(){
-        return dateTemplateArr;
-      },
 
       getBoxList: function() {
         console.log('getBoxList:', boxes);

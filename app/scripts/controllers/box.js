@@ -8,12 +8,13 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('BoxCtrl', ['$scope', '$routeParams', '$sce', '$timeout', 'clockService', 
-  	function ($scope, $routeParams, $sce, $timeout, clockService) {
+  .controller('BoxCtrl', ['$scope', '$routeParams', '$sce', '$timeout', 'dateTemplateService', 
+  	function ($scope, $routeParams, $sce, $timeout, dateTemplateService) {
   		var controller = this;
 
   		// get video sources -> controller.videos = 
-  		$scope.box = clockService.getBox($routeParams.boxId);
+      var dateTemplate = dateTemplateService.getActiveDateTemplate();
+  		$scope.box = dateTemplate.getBox($routeParams.boxId);
 
       console.log('$scope.box:', $scope.box);
       

@@ -8,8 +8,8 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('archiveService', ['clockService', 'lodash', '$q', '$log', 
-    function (clockService, _, $q, $log) {
+  .factory('archiveService', ['dateTemplateService', 'lodash', '$q', '$log', 
+    function (dateTemplateService, _, $q, $log) {
     // Service logic
     // ...
     var path = require('path'),
@@ -43,27 +43,27 @@ angular.module('musicPlayerApp')
       saveAs: function (filepath) {
         $log.info('saveAs filepath', filepath);
 
-        if (!clockService.valid()) {
+        if (!dateTemplateService.valid()) {
           $log.warn('Clock无效1');
           alert('Clock无效1');
           return;
         };
 
-        var clock = clockService.archive();
-        jsonfile.writeFileSync(filepath, clock, {flag: 'w'});
+        var dateTemplateArchive = dateTemplateService.archive();
+        jsonfile.writeFileSync(filepath, dateTemplateArchive, {flag: 'w'});
       },
 
       recoverFrom: function (filepath) {
         $log.info('recoverFrom filepath', filepath);
-        var clock = jsonfile.readFileSync(filepath);
-        clockService.recover(clock);
+        var dateTemplateConfig = jsonfile.readFileSync(filepath);
+        dateTemplateService.recover(dateTemplateConfig);
       },
 
       exportPackage: function (filepath, option) {
         $log.info('exportPackage filepath:', filepath);
 
         var deferred = $q.defer();
-        if (!clockService.valid()) {
+        if (!dateTemplateService.valid()) {
           deferred.reject('Clock无效2');
           $log.warn('Clock无效2');
           return deferred.promise;
@@ -81,7 +81,12 @@ angular.module('musicPlayerApp')
         $log.info("Create Asset Directory");
         fs.mkdirSync(assetDir);
 
-        var srcBoxes = clockService.getBoxList();
+        var srcBoxes = [];
+        var dateTemplateArray = dateTemplateService.getDateTemplateArray();
+        _.each(dateTemplateArray, function(dateTemplate) {
+          srcBoxes = _.union(dateTemplate.getBoxList());
+        });
+
         var md5, hash, targetRelativePath, trackInfo;
         var allTargetRelativePath = [],
             trackInfoCache = {},
@@ -189,34 +194,40 @@ angular.module('musicPlayerApp')
 
         var fnGenerateMusicEditor = function (callback) {
           $log.info("fnGenerateMusicEditor");
-          
-          // Collect Boxes Info
-          var boxes = [];
-          var tracks = [];
-          _.each(srcBoxes, function (box) {
-            tracks = [];
-            _.each(box.songList, function (track) {
-              tracks.push(path2trackInfo[track.path].hash);
+
+          var dstDateTemplates = [];
+
+          _.each(dateTemplateArray, function (dateTemplate) {
+            // Collect Boxes Info
+            var boxes = [];
+            var tracks = [];
+            _.each(dateTemplate.getBoxList(), function (box) {
+              tracks = [];
+              _.each(box.songList, function (track) {
+                tracks.push(path2trackInfo[track.path].hash);
+              });
+
+              boxes.push({
+                uuid: randomstring.generate(10),
+                name: box.name,
+                totalLength: box.totalLength,
+                startTm: box.startTm,
+                endTm: box.endTm,
+                tracks: tracks
+              });
             });
 
-            boxes.push({
-              uuid: randomstring.generate(10),
-              name: box.name,
-              totalLength: box.totalLength,
-              startTm: box.startTm,
-              endTm: box.endTm,
-              tracks: tracks
-            });
+            // Generate One dateTemplate
+            var dstDateTemplate = {
+              name: dateTemplate.name,
+              clock: {
+                boxes: boxes
+              },
+              periodInfo: dateTemplate.getPeriodInfo()
+            };
+            dstDateTemplates.push(dstDateTemplate);
           });
-
-          // Generate One dateTemplate
-          var dateTemplate = {
-            name: '随便写的',
-            clock: {
-              boxes: boxes
-            },
-            periodInfo: clockService.getPeriodInfo()
-          };
+          
           
           // dump to musicEditor
           var tracksMeta = _.mapValues(trackInfoCache, function(trackInfo) {
@@ -231,7 +242,7 @@ angular.module('musicPlayerApp')
             "brand": option.brand,
             "name": option.name,
             "type": 'simplified',
-            'dateTemplates': [dateTemplate],
+            'dateTemplates': dstDateTemplates,
             'tracksMeta' : tracksMeta
           };
 
