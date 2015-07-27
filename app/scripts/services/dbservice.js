@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('dbservice', function () {
+  .factory('dbservice', ['$q', 'lodash', '$log', function ($q, _, $log) {
     // Service logic
     // ...
     var Datastore = require('nedb')
@@ -30,25 +30,21 @@ angular.module('musicPlayerApp')
         return db;
       },
 
-      insert: function  (argument) {
-        var dtd = $.Deferred();
-        // body...
-        // var doc = {
-        //   name: 'hello',
-        //   path: 'helloSong'
-        // };
+      insert: function  (db, doc, callback) {
+        var dtd = $q.defer();
+        db.insert(doc, function (err, newDoc) {   // Callback is optional
+          if (angular.isFunction(callback)) {
+            callback(err, newDoc);
+          }
+          if (err) {
+            dtd.reject(err);
+            return;
+          };
+          
+          dtd.resolve(newDoc);
+        });
 
-        // db.insert(doc, function (err, newDoc) {   // Callback is optional
-        //   if (err) {
-        //     dtd.reject(err);
-        //     return;
-        //   };
-        //   // newDoc is the newly inserted document, including its _id
-        //   // newDoc has no key called notToBeSaved since its value was undefined
-        //   dtd.resolve(newDoc);
-        // });
-
-        return dtd.promise();
+        return dtd.promise;
       },
 
       count: function  (argument) {
@@ -78,6 +74,37 @@ angular.module('musicPlayerApp')
         // });
 
         return dtd.promise();
+      },
+
+      clear: function (db, callback) {
+        $log.info('clear db:', db);
+
+        var dtd = $q.defer();
+        db.remove({}, function (err, numRemoved) {
+          if (angular.isFunction(callback)) {
+            callback(err, numRemoved);
+          }
+          if (err) {
+            dtd.reject(err);
+            return;
+          };
+          
+          dtd.resolve(numRemoved);
+        });
+
+        return dtd.promise;
+      },
+
+      clearAll: function () {
+        $log.info('clear all data');
+        var deferArr = [];
+        var self = this;
+        var dbs = _.values(dataStoreCollection);
+        _.each(dbs, function (db) {
+            deferArr.push(self.clear(db));
+        });
+
+        return $q.all(deferArr);
       }
     };
-  });
+  }]);

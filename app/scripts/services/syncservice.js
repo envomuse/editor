@@ -97,9 +97,9 @@ angular.module('musicPlayerApp')
         .then(function (programs) {
           $log.info('gather tracks from programs');
           var trackArr = [];
-          _(programs).each(function (program) {
+          _.each(programs, function (program) {
             var playlistInCurProgram = _.pluck(program.dayPlaylistArr, 'playlist');
-            _(playlistInCurProgram).each(function (playlist) {
+            _.each(playlistInCurProgram, function (playlist) {
               trackArr = trackArr.concat(playlist);
             });
           });
@@ -128,7 +128,7 @@ angular.module('musicPlayerApp')
                   backendService.getTrack(trackId).then(function (trackInfo) {
                     $log.info('trackInfo is:', trackInfo);
                     // store it to db
-                    trackModelService.insert(program, callback);
+                    trackModelService.insert(trackInfo, callback);
                   });
               },
               function (err) {

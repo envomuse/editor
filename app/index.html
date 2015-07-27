@@ -40,48 +40,13 @@
             <div class="sk-circle12 sk-circle"></div>
         </div>
     </div>
-
-    <div class="header">
-      <div class="container">
-        <div ng-controller="OperationCtrl">
-          <div class="row">
-            <div class="col-md-9">
-              <h3> 当前Envo文件:  </h3>
-              {{currentEnvFile}}
-            </div>
-
-            <div class="col-md-1" ng-show="currentEnvFile.length > 4">
-              <div type="button" class="btn btn-info">
-                <span class="glyphicon glyphicon-save-file " ng-click="saveEnvoFile()" aria-hidden="true"></span>
-              </div>
-            </div>
-
-            
-            <div class="col-md-2">
-              <div class="btn-group" dropdown dropdown-append-to-body>
-                <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
-                  操作 <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu" role="menu">
-                  <li> <div file-dialog accept=".envo"  on-file-selected="openEnvoFile" title = '打开'/> </li>
-                  <li> <div file-dialog saveas accept=".envo"  on-file-selected="saveAsNewEnvoFile" title = '另存为'/> </li>
-                  <li class="divider"></li>
-                  <li> <div ng-click="openExportDialog()" class="btn btn-default" > 生成工作包 </div> </li>
-
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
     <div class="container">
       <div ng-view=""></div>
     </div>
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> Envomuse Editor</p>
+        <p><span class="glyphicon glyphicon-heart"></span> Envomuse Player</p>
       </div>
     </div>
     <!-- build:js(.) scripts/vendor.js -->
@@ -129,6 +94,7 @@
     <script src="scripts/services/clockService.js"></script>
     <script src="scripts/controllers/box.js"></script>
     <script src="scripts/controllers/period.js"></script>
+    <script src="scripts/controllers/player.js"></script>
     <script src="scripts/filters/periodinfofilter.js"></script>
     <script src="scripts/filters/durationfilter.js"></script>
     <script src="scripts/controllers/operation.js"></script>

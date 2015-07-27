@@ -43,8 +43,12 @@ angular
         templateUrl: 'views/period.html',
         controller: 'PeriodCtrl'
       })
+      .when('/player', {
+        templateUrl: 'views/player.html',
+        controller: 'PlayerCtrl as controller'
+      })
       .otherwise({
-        redirectTo: '/main'
+        redirectTo: '/player'
       });
   })
   .run(['$rootScope', '$interval', '$log', 'configService', 'syncService', 'backendService',

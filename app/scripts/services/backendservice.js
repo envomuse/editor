@@ -60,7 +60,7 @@ angular.module('musicPlayerApp')
         $log.info('sync program:', playlistId);
         
         return $http.get(BackendUrl+'playlists/'+playlistId)
-        .then(function (respArr) {
+        .then(function (resp) {
 
           $log.info('backend resp:', resp);
           var program = resp.data;

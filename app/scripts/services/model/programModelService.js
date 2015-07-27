@@ -8,11 +8,27 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('programModelService', ['dbservice', 'backendService', '$q', '$log',
-    function (dbservice, backendService, $q, $log) {
+  .factory('programModelService', ['dbservice', 'backendService', 'lodash', '$q', '$log',
+    function (dbservice, backendService, _, $q, $log) {
     // Service logic
     // ...
     var programStore = dbservice.getDataStore('program');
+
+    function convert(program) {
+      if (typeof program.startDate === 'string') {
+        program.startDate = new Date(program.startDate);
+      }
+      if (typeof program.endDate === 'string') {
+        program.endDate = new Date(program.endDate);
+      }
+      _.each(program.dayPlaylistArr, function (dayPlaylist) {
+        if (typeof dayPlaylist.date === 'string') {
+          dayPlaylist.date = new Date(dayPlaylist.date);
+        }
+      });
+
+      return program;
+    }
 
     // Public API here
     return {
@@ -34,35 +50,35 @@ angular.module('musicPlayerApp')
       },
 
       insert: function (program, callback) {
-        // body...
-        var deferred = $q.defer();
-        programStore.insert(program, function (err, newDoc) {   // Callback is optional
-          if (angular.isFunction(callback)) {
-            callback(err, newDoc);
-          }
-          if (err) {
-            dtd.reject(err);
-            return;
-          };
-          
-          dtd.resolve(newDoc);
-        });
-
-        return deferred.promise;
+        return dbservice.insert(programStore, convert(program), callback);
       },
 
-      queryPrograms: function (startDate, endDate, callback) {
+      queryPrograms: function (beginDay, futureDay, callback) {
+        console.log(beginDay);
+        console.log(futureDay);
         var deferred = $q.defer();
         programStore.find({
-          $or: [ {startDate: {
-            $gte: startDate,
-            $lte: endDate,
+          $or: [ {
+            startDate: {
+              $lte: beginDay
+            },
+            endDate: {
+              $gte: futureDay
+            }
+          }, {startDate: {
+            $gte: beginDay,
+            $lte: futureDay,
           }}, {endDate: {
-            $gte: startDate,
-            $lte: endDate,
+            $gte: beginDay,
+            $lte: futureDay,
           }} ]
           
         })
+// programStore.find({
+//             // startDate: {
+//             //   $lte: new Date()
+//             // }
+//           })
         .sort('-created')
         .exec(function(err, programs) {
           if (angular.isFunction(callback)) {
@@ -84,5 +100,10 @@ angular.module('musicPlayerApp')
       getStore: function () {
         return programStore;
       },
+
+      clear: function (callback) {
+        $log.info('clear programStore');
+        return dbservice.clear(programStore, callback);
+      }
     };
   }]);
