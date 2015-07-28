@@ -9,14 +9,17 @@
  */
 
 angular.module('musicPlayerApp')
-  .factory('playerServie', ['$q', 'lodash', 'utilService', 'programModelService', 'trackModelService'
-    , function($q, _, utilService, programModelService, trackModelService) {
+  .factory('playerServie', ['$q', '$log', 'lodash', 'utilService', 'programModelService', 'trackModelService'
+    , function($q, $log, _, utilService, programModelService, trackModelService) {
     //registor window events 
     var win = require('nw.gui').Window.get();
     win.on('close', function(){
       releaseResource();
       this.close(true);
     });
+
+    //
+    var todayTrackListCache = null;
 
     //media player manage
     var mediaPlayerCache = {},
@@ -117,6 +120,11 @@ angular.module('musicPlayerApp')
         var todayStart = moment().startOf('day'),
          todayEnd = moment().endOf('day');
 
+        if (todayTrackListCache) {
+          deferred.resolve(todayTrackListCache);
+          return deferred.promise;
+        }
+
         async.waterfall([
           function (callback) {
             programModelService.queryPrograms(todayStart, todayEnd, callback);
@@ -166,6 +174,19 @@ angular.module('musicPlayerApp')
             deferred.resolve(retPlaylist);
           });
 
+        return deferred.promise;
+      },
+
+      getCalcTrack: function () {
+        var deferred = $q.defer();
+        this.getTodayTrackList()
+        .then(function (todayTrackList) {
+          // just return the first one
+          deferred.resolve(todayTrackList[2]);
+        }, function (err) {
+          $log.error('getNextTrack:', err);
+          deferred.reject(err);
+        })
         return deferred.promise;
       }
     };

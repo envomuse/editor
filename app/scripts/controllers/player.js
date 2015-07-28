@@ -8,75 +8,76 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('PlayerCtrl', ['$scope', '$routeParams', '$sce', '$log', '$timeout', 'playerServie', 'dbservice',
+  .controller('PlayerCtrl', ['$scope', '$routeParams', '$sce', '$log', '$timeout', 'playerFacadeServie', 'dbservice',
     'trackModelService',
-  	function ($scope, $routeParams, $sce, $log, $timeout, playerServie, dbservice, trackModelService) {
+  	function ($scope, $routeParams, $sce, $log, $timeout, playerFacadeServie, dbservice, trackModelService) {
   		var controller = this;
 
       $scope.clearAll = function () {
         dbservice.clearAll();
       }
 
-      controller.videos = [];
+      $scope.scheduleTrack = function () {
+        playerFacadeServie.getNextTrack()
+        .then(function (track) {
+          if (track) {
+            var elapseMs = Number(track.exactPlayTime) - playerFacadeServie.getMsTimeInCurDay(new Date());
+            $timeout(function () {
+              $scope.setVideo(track);
+            }, elapseMs);
+          };
 
-      playerServie.getTodayTrackList()
-      .then(function (trackList) {
-        console.log(trackList);
-        $scope.trackList = trackList;
-
-        angular.forEach(trackList, function(track) {
-           var fileUrl = 'file://'+track.trackFilePath;
-           var oneSource = { sources: [{src: $sce.trustAsResourceUrl(fileUrl), type: 'audio/mpeg'}] };
-            controller.videos.push(oneSource); 
         });
 
-        controller.setVideo(0);
-      });
+      }
 
-  		// get video sources -> controller.videos = 
-  		
-  		
-  		
+      $scope.tryPlayTrackInTime = function() {
+        $log.info('tryPlayTrackInTime');
+        playerFacadeServie.getCalcTrack()
+        .then(function (track) {
+          if (track) {
+            $scope.setVideo(track);
+          } else {
+            $scope.scheduleTrack();
+          }
+        }, function (err) {
+          alert('Failed to get calc Track');
+        });
+      };
+
+      $scope.setVideo = function(track) {
+        $log.info('setVideo', track);
+        var trackFileUrl = 'file://'+track.trackFilePath;
+        $scope.track = track;
+        $scope.trackSource = [{src: $sce.trustAsResourceUrl(trackFileUrl), type: 'audio/mpeg'}];
+
+        controller.API.stop();
+        controller.config.sources = $scope.trackSource;
+        $timeout(controller.API.play.bind(controller.API), 100);
+      };
  
   		// videogular config
-        controller.API = null;
-        controller.currentVideo = 0;
+      controller.API = null;
   		
   		controller.onPlayerReady = function(API) {
-  			console.log(API);
-            controller.API = API;
-        };
+  			$log.info('onPlayerReady:', API);
+        controller.API = API;
+        $scope.tryPlayTrackInTime();
+      };
 
-        controller.onCompleteVideo = function() {
-            controller.isCompleted = true;
+      controller.onCompleteVideo = function() {
+          controller.isCompleted = true;
+          $scope.tryPlayTrackInTime();
+      };
 
-            controller.currentVideo++;
-
-            // if (controller.currentVideo >= controller.videos.length) controller.currentVideo = 0;
-
-            // controller.setVideo(controller.currentVideo);
-        };
-
-        controller.config = {
-            preload: "none",
-            autoHide: false,
-            autoHideTime: 3000,
-            autoPlay: true,
-            // sources: controller.videos[0].sources,
-            theme: {
-            	url: "../bower_components/videogular-themes-default/videogular.css"
-            },
-   //          plugins: {
-			// 	poster: "http://www.videogular.com/assets/images/videogular.png"
-			// }
-        };
-
-        controller.setVideo = function(index) {
-          $log.info('setVideo:', index);
-            controller.API.stop();
-            controller.currentVideo = index;
-            controller.config.sources = controller.videos[index].sources;
-            $timeout(controller.API.play.bind(controller.API), 100);
-        };
-
+      controller.config = {
+          // preload: "none",
+          // autoHide: false,
+          // autoHideTime: 3000,
+          autoPlay: true,
+          sources: [],
+          theme: {
+          	url: "../bower_components/videogular-themes-default/videogular.css"
+          }
+      };
   }]);
