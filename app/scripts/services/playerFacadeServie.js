@@ -30,6 +30,7 @@ angular.module('musicPlayerApp')
         + mmt.seconds() *1000
         + mmt.minutes() *60*1000
         + mmt.hours() *60 *60 *1000;
+        // + 11 *60 *60 *1000;
       },
 
       getTodayTrackList: function () {
@@ -102,9 +103,9 @@ angular.module('musicPlayerApp')
         .then(function (todayTrackList) {
           // just return the first one
           var now = self.getMsTimeInCurDay(moment()),
-          retTrack = _.find(todayTrackList, function (track) {
-            return now >= Number(track.exactPlayTime) && now < Number(track.exactPlayTime) + track.duration;
-          })
+           retTrack = _.find(todayTrackList, function (track) {
+            return now >= Number(track.exactPlayTime) && now < Number(track.exactPlayTime) + 1000* (track.duration);
+          });
           deferred.resolve(retTrack);
         }, function (err) {
           $log.error('getCalcTrack:', err);
